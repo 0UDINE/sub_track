@@ -71,7 +71,7 @@ python kafka/processed_consumer.py
 ```
 
 ## 📁 Project Structure  
-
+```
 subscription_pipeline/
 ├── data/
 │   ├── raw/                  # Raw JSON from Faker
@@ -83,6 +83,7 @@ subscription_pipeline/
 │   └── processed_consumer.py # Loads processed JSON → DB
 └── processing/
     └── transformer.py        # SQL → Transform → data/processed/
+    
 ```
 
 ## 🐛 Troubleshooting  
