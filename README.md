@@ -1,10 +1,6 @@
----
-
 # 📊 Subscription Data Pipeline  
 
 **A data engineering pipeline demonstrating batch-to-stream processing** using Python, SQL Server, Apache Kafka, and JSON intermediates. Generates synthetic subscription data, processes it through staged ETL, and delivers analytics-ready results.
-
----
 
 ## 🏗️ Architecture Overview  
 
@@ -36,8 +32,6 @@ flowchart LR
    - **Kafka Producer** streams processed JSON to downstream topics  
    - Final data lands in SQL Server (`processed_subscriptions`)  
 
----
-
 ## 🛠️ Technology Stack  
 
 | Component           | Tools                                                                 |
@@ -47,8 +41,6 @@ flowchart LR
 | **Database**        | SQL Server (`raw_subscriptions`, `processed_subscriptions`)           |
 | **Processing**      | Pandas (ETL), SQLAlchemy (ORM)                                       |
 | **Connectivity**    | PyODBC (SQL Server), confluent-kafka (Python client)                 |
-
----
 
 ## 🚀 Quick Start  
 
@@ -78,11 +70,8 @@ python processing/transformer.py
 python kafka/processed_consumer.py  
 ```
 
----
-
 ## 📁 Project Structure  
 
-```
 subscription_pipeline/
 ├── data/
 │   ├── raw/                  # Raw JSON from Faker
@@ -95,8 +84,6 @@ subscription_pipeline/
 └── processing/
     └── transformer.py        # SQL → Transform → data/processed/
 ```
-
----
 
 ## 🔄 JSON Integration Points  
 
