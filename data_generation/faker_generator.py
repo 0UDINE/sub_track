@@ -147,13 +147,12 @@ class RawDataGenerator:
     def generate_raw_utilisateur_fournisseur(self) -> Dict[str, Any]:
         """Generate raw supplier user data"""
         user = self.generate_raw_user()
+        fournisseur = self.generate_raw_fournisseur()
 
         fournisseur_user = {
             "raw_id": len(self.raw_utilisateur_fournisseur) + 1,
             "userId": user["userId"],
-            "responsableContractActivity": random.choice([fake.name(), f"Dept: {fake.job()}", ""]),
-            "operationRespoOccupation": fake.job(),
-            "chefFactorId": random.choice([f"USR{random.randint(1, self.next_user_id):05}", None, "NULL"]),
+            "idFournisseur" : fournisseur["idFournisseur"],
             "date_extraction": user["date_extraction"],
             "source_system": user["source_system"]
         }
