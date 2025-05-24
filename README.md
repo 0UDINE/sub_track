@@ -4,7 +4,7 @@ A beginner-friendly data engineering pipeline that demonstrates real-time data p
 
 ## 🏗️ Architecture Overview
 
-![Architecture Diagram](assets/images/architecture_diagram.png)
+![Architecture Diagram](assets/images/1.png)
 
 This project implements a comprehensive data engineering pipeline with the following components:
 
@@ -145,12 +145,12 @@ Execute the following commands in separate terminals:
 
 2. **Start the Kafka producer:**
    ```bash
-   python kafka/producer.py
+   python kafka/producer_raw.py
    ```
 
 3. **Start the Kafka consumer:**
    ```bash
-   python kafka/consumer.py
+   python kafka/consumer_raw.py
    ```
 
 ## 📁 Project Structure
