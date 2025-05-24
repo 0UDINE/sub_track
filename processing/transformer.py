@@ -54,9 +54,11 @@ print(f"before cleaning : \n {raw_Notifications}")
 # making empty strings into NaN so we can fill it later
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('',np.nan)
 # standarizing text , instead of ('EMAIL','email'), it will be always ('email')
-raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('EMAIL','email')
-raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('SMS','sms')
-raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('In-App','in-app')
+raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace({
+    'EMAIL': 'email',
+    'SMS': 'sms',
+    'In-App': 'in-app'
+    })
 # filling null values with a default value
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].fillna('email')
 # stadarizing the date format
@@ -148,9 +150,12 @@ nan_value=raw_Paiement['motifPaiement'].isna()
 # filling null values with random choices from existing valid payment reasons
 raw_Paiement.loc[nan_value,'motifPaiement']=np.random.choice(value,size=nan_value.sum())
 # replacing empty strings with default message
-raw_Paiement['motifPaiement'] = raw_Paiement['motifPaiement'].replace('','il n\'a pas de motif')
-raw_Paiement['statusPaiement'] = raw_Paiement['statusPaiement'].replace('success','reussi')
-raw_Paiement['statusPaiement'] = raw_Paiement['statusPaiement'].replace('failed','echoue')
+raw_Paiement['statusPaiement'] = raw_Paiement['statusPaiement'].replace(
+    {
+        '': 'il n\'a pas de motif',
+        'success': 'reussi',
+        'failed': 'echoue'
+    })
 print(f"after cleaning : \n {raw_Paiement}")
 
 
