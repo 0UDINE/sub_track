@@ -39,7 +39,7 @@ flowchart LR
 | **Data Generation** | Python Faker, JSON intermediates                                      |
 | **Streaming**       | Apache Kafka (raw/processed topics)                                   |
 | **Database**        | SQL Server (`raw_subscriptions`, `processed_subscriptions`)           |
-| **Processing**      | Pandas (ETL), SQLAlchemy (ORM)                                       |
+| **Processing**      | Pandas (ETL)                                                          |
 | **Connectivity**    | PyODBC (SQL Server), confluent-kafka (Python client)                 |
 
 ## 🚀 Quick Start  
@@ -84,25 +84,6 @@ subscription_pipeline/
 └── processing/
     └── transformer.py        # SQL → Transform → data/processed/
 ```
-
-## 🔄 JSON Integration Points  
-
-1. **Raw Data Persistence**  
-   - Faker outputs to `data/raw/subscriptions_<timestamp>.json`  
-   - Optional: Replay JSON files for debugging by re-running producers  
-
-2. **Processed Data Handoff**  
-   - SubTrack saves cleansed data to `data/processed/subscriptions_<batch>.json`  
-   - Kafka streams these files to final DB tables  
-
----
-
-## 💡 Why JSON?  
-- **Development**: Inspect/intermediate data without DB dependencies  
-- **Testing**: Replay specific batches from JSON files  
-- **Portability**: Decouple generation from streaming logic  
-
----
 
 ## 🐛 Troubleshooting  
 
