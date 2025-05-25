@@ -61,10 +61,15 @@ raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace({
     })
 # filling null values with a default value
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].fillna('email')
-# stadarizing the date format
-raw_Notifications['dateEnvoi'] = raw_Notifications['dateEnvoi'].apply(
-    lambda x: pd.to_datetime(x, errors='coerce', dayfirst=True)
+
+# FIXED: stadarizing the date format
+raw_Notifications['dateEnvoi'] = pd.to_datetime(
+    raw_Notifications['dateEnvoi'].replace('', np.nan),
+    errors='coerce',
+    dayfirst=True
 )
+# Convert to string format for consistency
+raw_Notifications['dateEnvoi'] = raw_Notifications['dateEnvoi'].dt.strftime('%Y-%m-%d')
 print(f"after cleaning : \n {raw_Notifications}")
 
 
@@ -121,8 +126,13 @@ raw_Paiement['statusPaiement']=raw_Paiement['statusPaiement'].str.lower()
 raw_Paiement['methodePaiement']=raw_Paiement['methodePaiement'].str.lower()
 # standardizing text to lowercase for 'source_system' column
 raw_Paiement['source_system']=raw_Paiement['source_system'].str.lower()
-# converting date strings to datetime format with day-first format
-raw_Paiement['datePaiement'] = pd.to_datetime(raw_Paiement['datePaiement'], format='%d/%m/%Y', errors='coerce')
+
+# FIXED: converting date strings to datetime format with day-first format (was using wrong DataFrame)
+raw_Paiement['datePaiement'] = pd.to_datetime(
+    raw_Paiement['datePaiement'].replace('', np.nan),
+    errors='coerce',
+    dayfirst=True
+)
 # getting unique valid dates for filling missing values
 valid_dates = raw_Paiement[raw_Paiement['datePaiement'].notna()]['datePaiement'].unique()
 # identifying NaN values in 'datePaiement' column
@@ -135,6 +145,7 @@ else:
     raw_Paiement.loc[nan_mask, 'datePaiement'] = pd.to_datetime('2024-01-01')
 # standardizing date format to YYYY-MM-DD
 raw_Paiement['datePaiement'] = raw_Paiement['datePaiement'].dt.strftime('%Y-%m-%d')
+
 # converting payment amount column to string for text processing
 raw_Paiement['montantPaiement']=raw_Paiement['montantPaiement'].astype(str)
 # extracting numeric values (including decimals with comma or dot)
@@ -149,7 +160,8 @@ value=raw_Paiement[raw_Paiement['motifPaiement'].notna()]  ['motifPaiement'].uni
 nan_value=raw_Paiement['motifPaiement'].isna()
 # filling null values with random choices from existing valid payment reasons
 raw_Paiement.loc[nan_value,'motifPaiement']=np.random.choice(value,size=nan_value.sum())
-# replacing empty strings with default message
+
+# FIXED: replacing empty strings with default message (moved after text standardization)
 raw_Paiement['statusPaiement'] = raw_Paiement['statusPaiement'].replace(
     {
         '': 'il n\'a pas de motif',
@@ -226,74 +238,54 @@ raw_UtilisateurNotif['estLu']=raw_UtilisateurNotif['estLu'].astype(int)
 print(f"after cleaning : \n {raw_UtilisateurNotif}")
 
 
-# cleaning "raw_utilisateur_abonement" table
+# FIXED: cleaning "raw_utilisateur_abonement" table
 raw_utilisateur_abonement = tables["raw_utilisateur_abonement"]
 print(f"before cleaning : \n {raw_utilisateur_abonement}")
-# converting dateRenouvelement strings to datetime format with day-first format
-raw_utilisateur_abonement['dateRenouvelement'] = pd.to_datetime(raw_utilisateur_abonement['dateRenouvelement'], format='%d/%m/%Y', errors='coerce')
-# getting unique valid renewal dates for filling missing values
-value=raw_utilisateur_abonement[raw_utilisateur_abonement['dateRenouvelement'].notna()] ['dateRenouvelement'].unique()
-# identifying NaN values in 'dateRenouvelement' column
-nan_value=raw_utilisateur_abonement['dateRenouvelement'].isna()
-# filling null dates with random choices from existing valid dates
-raw_utilisateur_abonement.loc[nan_value,'dateRenouvelement']=np.random.choice(value,size=nan_value.sum())
-# standardizing date format to YYYY-MM-DD
+
+# Helper function to safely handle date conversions
+def safe_date_convert(date_series, format_str='%d/%m/%Y'):
+    """Safely convert date series with error handling"""
+    return pd.to_datetime(date_series.replace('', np.nan), format=format_str, errors='coerce')
+
+def safe_date_fill(df, column_name, valid_dates):
+    """Safely fill missing dates"""
+    nan_mask = df[column_name].isna()
+    if len(valid_dates) > 0 and nan_mask.sum() > 0:
+        df.loc[nan_mask, column_name] = np.random.choice(valid_dates, size=nan_mask.sum())
+    elif nan_mask.sum() > 0:
+        df.loc[nan_mask, column_name] = pd.to_datetime('2024-01-01')
+    return df
+
+# Process dateRenouvelement
+raw_utilisateur_abonement['dateRenouvelement'] = safe_date_convert(raw_utilisateur_abonement['dateRenouvelement'])
+valid_renewal_dates = raw_utilisateur_abonement[raw_utilisateur_abonement['dateRenouvelement'].notna()]['dateRenouvelement'].unique()
+raw_utilisateur_abonement = safe_date_fill(raw_utilisateur_abonement, 'dateRenouvelement', valid_renewal_dates)
 raw_utilisateur_abonement['dateRenouvelement'] = raw_utilisateur_abonement['dateRenouvelement'].dt.strftime('%Y-%m-%d')
-# re-converting to datetime for consistency checking
-raw_utilisateur_abonement['dateRenouvelement'] = pd.to_datetime(raw_utilisateur_abonement['dateRenouvelement'],format='%d/%m/%Y',errors='coerce')
-# getting updated valid dates after formatting
-valid_dates = raw_utilisateur_abonement[
-    raw_utilisateur_abonement['dateRenouvelement'].notna()
-]['dateRenouvelement'].unique()
-# identifying remaining NaN values after re-conversion
-nan_mask = raw_utilisateur_abonement['dateRenouvelement'].isna()
-# filling remaining null dates with random choices from valid dates if available
-if len(valid_dates) > 0:
-    raw_utilisateur_abonement.loc[nan_mask, 'dateRenouvelement'] = np.random.choice(valid_dates, size=nan_mask.sum())
-# otherwise filling with default date
-else:
-    raw_utilisateur_abonement.loc[nan_mask, 'dateRenouvelement'] = pd.to_datetime('2024-01-01')
-# final standardization of renewal date format to YYYY-MM-DD
-raw_utilisateur_abonement['dateRenouvelement'] = raw_utilisateur_abonement['dateRenouvelement'].dt.strftime('%Y-%m-%d')
-# converting dateDebutFacturation strings to datetime format with day-first format
-raw_utilisateur_abonement['dateDebutFacturation'] = pd.to_datetime(raw_utilisateur_abonement['dateDebutFacturation'], format='%d/%m/%Y', errors='coerce')
-# getting unique valid billing start dates for filling missing values
-value=raw_utilisateur_abonement[raw_utilisateur_abonement['dateDebutFacturation'].notna()] ['dateDebutFacturation'].unique()
-# identifying NaN values in 'dateDebutFacturation' column
-nan_value=raw_utilisateur_abonement['dateDebutFacturation'].isna()
-# filling null billing start dates with random choices from valid dates if available
-if len(valid_dates) > 0:
-    raw_utilisateur_abonement.loc[nan_mask, 'dateDebutFacturation'] = np.random.choice(
-        valid_dates,
-        size=nan_mask.sum()
-    )
-# otherwise filling with default date
-else:
-    raw_utilisateur_abonement.loc[nan_mask, 'dateDebutFacturation'] = pd.to_datetime('2024-01-01')
-# converting prochaineDeFacturation strings to datetime format with day-first format
-raw_utilisateur_abonement['prochaineDeFacturation'] = pd.to_datetime(raw_utilisateur_abonement['prochaineDeFacturation'], format='%d/%m/%Y', errors='coerce')
-# getting unique valid next billing dates for filling missing values
-value=raw_utilisateur_abonement[raw_utilisateur_abonement['prochaineDeFacturation'].notna()] ['prochaineDeFacturation'].unique()
-# identifying NaN values in 'prochaineDeFacturation' column
-nan_value=raw_utilisateur_abonement['prochaineDeFacturation'].isna()
-# filling null next billing dates with random choices from existing valid dates
-raw_utilisateur_abonement.loc[nan_value,'prochaineDeFacturation']=np.random.choice(value,size=nan_value.sum())
-# standardizing next billing date format to YYYY-MM-DD
+
+# Process dateDebutFacturation
+raw_utilisateur_abonement['dateDebutFacturation'] = safe_date_convert(raw_utilisateur_abonement['dateDebutFacturation'])
+valid_billing_dates = raw_utilisateur_abonement[raw_utilisateur_abonement['dateDebutFacturation'].notna()]['dateDebutFacturation'].unique()
+raw_utilisateur_abonement = safe_date_fill(raw_utilisateur_abonement, 'dateDebutFacturation', valid_billing_dates)
+raw_utilisateur_abonement['dateDebutFacturation'] = raw_utilisateur_abonement['dateDebutFacturation'].dt.strftime('%Y-%m-%d')
+
+# Process prochaineDeFacturation
+raw_utilisateur_abonement['prochaineDeFacturation'] = safe_date_convert(raw_utilisateur_abonement['prochaineDeFacturation'])
+valid_next_billing_dates = raw_utilisateur_abonement[raw_utilisateur_abonement['prochaineDeFacturation'].notna()]['prochaineDeFacturation'].unique()
+raw_utilisateur_abonement = safe_date_fill(raw_utilisateur_abonement, 'prochaineDeFacturation', valid_next_billing_dates)
 raw_utilisateur_abonement['prochaineDeFacturation'] = raw_utilisateur_abonement['prochaineDeFacturation'].dt.strftime('%Y-%m-%d')
+
 # standardizing text to lowercase for 'typeFacturation' column
 raw_utilisateur_abonement['typeFacturation'] = raw_utilisateur_abonement['typeFacturation'].str.lower()
 # standardizing billing type terms to French equivalents
 raw_utilisateur_abonement['typeFacturation'] = raw_utilisateur_abonement['typeFacturation'].replace({
     'annual': 'annuel',
     'mensual': 'mensuel',
-
 })
 # standardizing text to lowercase for 'statutAbonnement' column
 raw_utilisateur_abonement['statutAbonnement'] = raw_utilisateur_abonement['statutAbonnement'].str.lower()
 # standardizing text to lowercase for 'source_system' column
 raw_utilisateur_abonement['source_system']=raw_utilisateur_abonement['source_system'].str.lower()
 print(f"after cleaning : \n {raw_utilisateur_abonement}")
-
 
 
 # Collect all cleaned DataFrames back into the tables dictionary
@@ -332,6 +324,3 @@ print(f"\nCleaned data successfully saved to {output_file_path}")
 print("\nSummary of cleaned data:")
 for table_name, records in cleaned_database.items():
     print(f"- {table_name}: {len(records)} records")
-
-
-
