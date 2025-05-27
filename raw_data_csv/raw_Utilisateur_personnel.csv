@@ -1,0 +1,77 @@
+raw_id,userId,prenom,nom,telephone,adresse,date_extraction,source_system,data_quality_notes
+1,USR00002,Paulette,clark,(93) 9928-7873,"283 Steven Groves; Lake Mark, WI 07832",2025-03-14 14:33:53,CRM_System,Phone format issue
+2,USR00006,,sanchez,N/A,"72, rue Gallet; 42901 Laroche-sur-Mer",2025-03-01 20:35:16,CRM_System,
+3,USR00008,,jones,374.167.4456,"78498 Elizabeth Plaza Suite 124; North Juliaberg, KY 37431",2025-03-23 14:00:38,Web_Form,Address incomplete
+4,USR00010,SAMANTHA,alvarado,(97) 7916-2040,"465 Terry Plaza Apt. 366; New Ashley, MO 72320",2025-01-14 14:06:05,Legacy_DB,Address incomplete
+5,USR00012,JACQUELINE,Vargas,(87) 4258-3504,chemin Dumas; 46283 Garcia,2025-02-23 16:34:53,API_Import,
+6,USR00014,,Johnson,N/A,"4549 Peters Path; North John, MT 64539",2025-03-07 07:43:18,Web_Form,Phone format issue
+7,USR00016,,Pages,+33 294705205,"1832 Serrano Cliffs; East Laurashire, PW 38329",2025-05-14 11:26:45,API_Import,Address incomplete
+8,USR00026,,chevallier,0364371717,"0229 Jones Streets Apt. 183; Barnesmouth, GA 49004",2025-01-08 14:24:55,CRM_System,Phone format issue
+9,USR00028,,Bell,N/A,"39, rue Lucy Leduc; 47667 Saint RolandBourg",2025-04-01 02:10:40,Mobile_App_v2,Phone format issue
+10,USR00030,Kimberly,collin,0369639388,"36971 Mary Parks; Lake Zacharybury, VT 19319",2025-04-08 11:31:21,API_Import,Address incomplete
+11,USR00036,,faure,(563)768-9702,"743, rue de Mahe; 80658 Clerc",2025-04-20 10:39:01,Manual_Entry,
+12,USR00038,GABRIELLE,Gilbert,N/A,"301 Rivera Mountains; Lake Kellitown, OH 21202",2025-02-26 09:36:26,API_Import,Phone format issue
+13,USR00040,ZACHARY,Ramos,682.408.7653,"13, rue de Turpin; 39263 Torres-la-Forêt",2025-03-25 01:14:29,Legacy_DB,Phone format issue
+14,USR00042,KAREN,legrand,N/A,"91, rue Georges; 05393 Arnaud-les-Bains",2025-01-14 01:35:54,Web_Form,Missing first name
+15,USR00044,,lucas,670.355.2988,rue de Traore; 19116 Lenoir,2025-03-13 23:36:36,Web_Form,Address incomplete
+16,USR00046,William,brooks,N/A,rue Geneviève Guillot; 72954 Labbéboeuf,2025-04-12 17:45:28,CRM_System,Missing first name
+17,USR00048,,Henry,405.871.7389,"75, boulevard de Dufour; 38428 Lemonnier-sur-Bourgeois",2025-05-04 03:13:37,API_Import,Missing first name
+18,USR00052,Hortense,Lefort,+33 3 84 25 36 72,"0714 Knapp Corner; Port Sheliaberg, MI 41381",2025-03-17 22:49:02,Legacy_DB,Missing first name
+19,USR00054,,Besnard,+1-905-807-2368x876,"90340 Walker Heights; Port Stephen, WA 65422",2025-04-29 12:17:37,Mobile_App_v2,Phone format issue
+20,USR00056,,farmer,(65) 3885-9548,"52, rue de Pires; 04443 MaillardBourg",2025-03-08 17:56:33,Legacy_DB,Address incomplete
+21,USR00058,ROLAND,chavez,+33 176344695,"210 Jacqueline Estates Suite 588; Garyberg, WA 35728",2025-01-16 08:16:01,Manual_Entry,Phone format issue
+22,USR00060,,martinez,808.349.6016,"91, rue Catherine Le Gall; 59371 Saint Hugues-la-Forêt",2025-03-18 07:17:31,CRM_System,Phone format issue
+23,USR00064,MEGAN,peltier,989.870.9042,"85156 Matthew Islands; East Jessica, NE 84290",2025-02-27 04:41:59,API_Import,Phone format issue
+24,USR00066,TANYA,wilkerson,(76) 7232-8381,"8617 Francisco Cliffs Apt. 405; Stephanieland, MA 22797",2025-05-18 16:01:12,Mobile_App_v2,Address incomplete
+25,USR00068,DIANA,baron,N/A,"44, boulevard Salmon; 30158 Antoine-sur-Peltier",2025-01-22 20:22:32,CRM_System,Address incomplete
+26,USR00070,,thomas,227.579.5982,"32, rue Gilles Bonneau; 55748 Antoinenec",2025-04-29 06:22:45,Web_Form,
+27,USR00072,,richard,+33 1 70 87 37 53,"74329 Tracy Track; East Christinachester, MO 56734",2025-02-27 08:26:10,API_Import,Address incomplete
+28,USR00074,SUZANNE,Baudry,0371011200,"753 Alexander Corners; Port Audreyfort, FL 12308",2025-03-31 03:32:09,CRM_System,Phone format issue
+29,USR00076,Julie,Powell,418.664.1224,"734, chemin Catherine Lucas; 18522 Bonnin-sur-Bouvet",2025-04-24 14:51:36,Manual_Entry,
+30,USR00078,RÉMY,Dumont,+33 928321839,"81062 Ellen Flats Suite 244; Port Bryan, WY 39185",2025-05-11 13:29:19,Legacy_DB,Phone format issue
+31,USR00080,,clerc,976.894.7730,"1809 Katelyn Prairie; Lake Melaniestad, NY 14412",2025-03-31 04:08:40,Web_Form,Missing first name
+32,USR00082,,leconte,+33 555440919,boulevard Daniel Leclercq; 40597 Boulanger-la-Forêt,2025-02-26 10:32:22,CRM_System,Address incomplete
+33,USR00084,Maurice,Valdez,(55) 7141-8056,"3865 Tucker Orchard Apt. 827; East Chris, SD 37307",2025-04-25 02:46:54,Manual_Entry,Address incomplete
+34,USR00086,Brianna,horton,+33 599501846,"5, boulevard de Lejeune; 32293 Saint Hortense",2025-04-04 14:51:29,Manual_Entry,Phone format issue
+35,USR00092,TAYLOR,weeks,0344843479,"46, chemin Aimée Maréchal; 35561 Masse",2025-04-29 23:45:10,Web_Form,Address incomplete
+36,USR00096,,Sherman,138.411.9071,"9, rue de Fleury; 61753 Philippe",2025-03-03 12:06:47,Manual_Entry,Address incomplete
+37,USR00098,,david,+33 (0)1 73 22 03 17,"58, chemin Louis; 77835 Saint Marcdan",2025-05-08 22:39:17,Mobile_App_v2,Address incomplete
+38,USR00100,RÉMY,Poulain,0991010113,"8320 Maddox Terrace; East Ryanfurt, FL 17827",2025-01-27 21:01:44,Web_Form,Phone format issue
+39,USR00102,Michelle,Bodin,0378679814,"7, rue de Charles; 66635 Maury-sur-Mer",2025-05-02 02:32:21,Mobile_App_v2,Address incomplete
+40,USR00106,DEBORAH,Camus,0126515624,rue Corinne Morvan; 55408 Sainte Océane,2025-03-18 17:27:09,Mobile_App_v2,Phone format issue
+41,USR00110,MACKENZIE,Mcintosh,+33 979838315,"702 Allen Island Apt. 405; Jeffreychester, KS 66198",2025-04-25 08:31:38,API_Import,Missing first name
+42,USR00112,,Bourgeois,(78) 5013-7678,"84, rue Allain; 28491 Saint Astrid",2025-05-20 06:17:04,API_Import,Phone format issue
+43,USR00116,,De Sousa,+1-553-291-6077x00409,rue Aimée Bouchet; 97164 Sainte Auguste,2025-03-06 22:58:59,Mobile_App_v2,Phone format issue
+44,USR00118,,russell,914.861.9953x946,"20, rue Hortense Labbé; 02585 Blin",2025-01-16 12:29:33,Web_Form,Missing first name
+45,USR00120,Joséphine,Grant,+33 467785785,"80, rue Martinez; 65744 DavidBourg",2025-01-25 03:32:22,Web_Form,Phone format issue
+46,USR00126,Christine,bates,0207845338,"68, chemin Benard; 49297 Da Silva",2025-01-18 10:37:50,CRM_System,Missing first name
+47,USR00128,,scott,139.528.5310,"9, rue Pruvost; 48503 Gosselin",2025-02-03 10:16:02,CRM_System,Missing first name
+48,USR00130,,Clerc,+33 643204963,"14, boulevard de Coste; 16111 Coste",2025-01-09 01:32:37,Mobile_App_v2,Address incomplete
+49,USR00132,Ashley,lucas,500.928.8240,"58694 Stephen Villages Suite 483; Port Tinaborough, UT 00827",2025-05-24 06:27:46,API_Import,Missing first name
+50,USR00136,William,Cherry,(37) 5074-1223,"6401 Robinson Dale; Timothyfort, NY 87258",2025-04-01 18:25:32,Legacy_DB,
+51,USR00138,Lisa,Dumont,N/A,"298, rue de Boulanger; 78395 Maillot-sur-Mer",2025-03-15 23:37:00,Legacy_DB,Missing first name
+52,USR00140,MARTHE,brown,N/A,"382, avenue Laine; 82659 Boyerboeuf",2025-04-14 02:53:36,CRM_System,Missing first name
+53,USR00142,KENNETH,Cohen,0646400068,"49866 Joseph Summit; Lake Lisastad, IA 57814",2025-02-03 10:16:02,Legacy_DB,Missing first name
+54,USR00144,ANOUK,lee,N/A,"994 Jason View; Williamland, TN 14897",2025-03-19 01:30:15,Manual_Entry,Missing first name
+55,USR00146,Melinda,james,0658280271,"138 Benjamin Route; Turnerville, TN 50170",2025-01-26 17:35:16,CRM_System,Address incomplete
+56,USR00148,VANESSA,Brock,+33 492409660,"76238 David Ways; East Jerome, OH 19910",2025-02-26 19:18:52,Mobile_App_v2,Missing first name
+57,USR00150,ASHLEY,Buisson,0455446264,"6, boulevard Bertrand Pascal; 74409 Gros",2025-03-14 06:01:31,API_Import,Phone format issue
+58,USR00156,,scott,(70) 6816-6107,"44, rue Fernandes; 54973 Bouvet",2025-04-30 04:55:47,API_Import,
+59,USR00158,KELLY,stevens,0291139369,"86, avenue de Picard; 80206 Sainte Susanne",2025-05-21 09:49:41,Manual_Entry,
+60,USR00160,,costa,(45) 1937-1498,"54617 Cobb Pines; New Natalieborough, NC 96674",2025-01-20 14:49:41,CRM_System,Address incomplete
+61,USR00162,Ronald,Lemaître,+33 895560869,"69, chemin Pichon; 97444 Gayboeuf",2025-05-27 09:39:38,Legacy_DB,Phone format issue
+62,USR00164,THÉODORE,Powell,N/A,"3866 Shelton Garden Apt. 031; Schwartzchester, NE 48324",2025-04-02 00:25:23,Web_Form,
+63,USR00168,CLAUDE,Lefort,0857969344,"27, rue de Nguyen; 60969 Tessierdan",2025-01-18 01:05:30,CRM_System,Phone format issue
+64,USR00170,JAIME,nicholson,+1-486-407-4290x6952,rue Margaud Dupont; 11401 Masson,2025-02-20 06:59:00,API_Import,Missing first name
+65,USR00172,SUSAN,joly,+33 153268043,"322, rue de Jacquet; 02648 Georges",2025-05-09 01:57:47,API_Import,
+66,USR00174,,Brown,445.594.7572,"803, boulevard de Leleu; 15783 Pereira",2025-05-25 14:42:03,Legacy_DB,Address incomplete
+67,USR00176,Scott,graham,392.721.9836,"2987 Smith Row; Michaelland, MN 26256",2025-03-08 09:52:22,Web_Form,Missing first name
+68,USR00178,,nichols,663.803.7456,"20831 Mills Stream Suite 360; New Annette, TN 89658",2025-02-15 15:16:44,Legacy_DB,Missing first name
+69,USR00184,Émile,Wilson,+33 272400868,Unit 3613 Box 1798; DPO AA 35596,2025-05-13 16:15:31,Legacy_DB,Missing first name
+70,USR00186,ADRIENNE,leclercq,N/A,"47, rue de Lévêque; 94774 Jacquotdan",2025-01-12 22:30:38,API_Import,
+71,USR00190,Lucy,Laurent,N/A,"96, chemin Samson; 73410 Rocher-la-Forêt",2025-02-10 16:28:38,API_Import,Missing first name
+72,USR00192,ADRIENNE,marty,723.841.2656,"271, boulevard Aurélie Fournier; 08993 Becker",2025-05-09 14:00:43,CRM_System,Address incomplete
+73,USR00194,,traore,0607792264,"78, rue de Delattre; 63321 Michaud-la-Forêt",2025-01-11 00:29:56,Mobile_App_v2,Phone format issue
+74,USR00196,,lagarde,(87) 8547-7893,"7403 Price Manor; Campbellview, VI 20200",2025-04-18 15:04:33,Web_Form,Address incomplete
+75,USR00198,MICHELLE,gomez,+33 294742934,"82, chemin Capucine Hoareau; 59289 Bourdon-sur-Andre",2025-04-29 00:35:04,Mobile_App_v2,Phone format issue
+76,USR00200,Sabrina,Bernard,(22) 7483-4576,"682, rue David; 97380 Pottier",2025-01-29 21:54:41,Manual_Entry,Phone format issue

@@ -91,7 +91,7 @@ class RawDataGenerator:
             "userId": f"USR{self.next_user_id:05}",  # String ID format
             "email": random.choice(email_formats),
             "motsDePasse": random.choice(password_formats),
-            "rôle": random.choice(["utilisateur", "admin", "fournisseur", "manager", ""]),  # Inconsistent roles
+            "role": random.choice(["utilisateur", "admin", "fournisseur", "manager", ""]),  # Inconsistent roles
             "date_extraction": fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S'),
             "source_system": self._generate_source_system(),
             "data_quality_flag": random.choice([0, 1, None])

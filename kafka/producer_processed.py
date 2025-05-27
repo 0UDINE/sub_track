@@ -1,199 +1,189 @@
-"""
-Kafka Producer for Subscription Management System
-Sends processed/cleaned data to Kafka topics
-"""
 import json
 import logging
-from kafka import KafkaProducer
-from kafka.errors import KafkaError
+from confluent_kafka import Producer
+from typing import Dict, Any
 import time
-from typing import Dict, List, Any
-import argparse
+import sys
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 
 class SubscriptionDataProducer:
-    """Kafka producer for subscription management data"""
+    def __init__(self, config: Dict[str, Any]):
+        """
+        Initialize Kafka producer with configuration
 
-    def __init__(self, bootstrap_servers='localhost:9092', topic_prefix='subscription'):
-        """Initialize Kafka producer"""
-        self.bootstrap_servers = bootstrap_servers
-        self.topic_prefix = topic_prefix
+        Args:
+            config: Kafka producer configuration dictionary
+        """
+        self.producer = Producer(config)
+        self.topic = "subscriptions_processed_data"
+        self.delivery_success = False
+        self.delivery_error = None
 
-        # Configure producer with proper serialization
-        self.producer = KafkaProducer(
-            bootstrap_servers=bootstrap_servers,
-            value_serializer=lambda v: json.dumps(v, ensure_ascii=False, default=str).encode('utf-8'),
-            key_serializer=lambda k: k.encode('utf-8') if k else None,
-            acks='all',  # Wait for all replicas to acknowledge
-            retries=3,
-            batch_size=16384,
-            linger_ms=10,
-            buffer_memory=33554432,
-            compression_type='gzip'
-        )
+    def delivery_report(self, err, msg):
+        """
+        Delivery report callback for producer
+        """
+        if err is not None:
+            logger.error(f'Message delivery failed: {err}')
+            self.delivery_error = err
+        else:
+            logger.info(f'Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}')
+            self.delivery_success = True
 
-        logger.info(f"Kafka producer initialized with servers: {bootstrap_servers}")
+    def send_data_batch(self, data_batch: Dict[str, Any], batch_id: str):
+        """
+        Send a batch of data to Kafka topic
 
-    def create_topic_name(self, table_name: str) -> str:
-        """Create standardized topic name"""
-        # Remove 'raw_' prefix and convert to lowercase
-        clean_name = table_name.replace('raw_', '').lower()
-        return f"{self.topic_prefix}_{clean_name}"
-
-    def send_table_data(self, table_name: str, records: List[Dict[str, Any]]) -> bool:
-        """Send all records from a table to its corresponding Kafka topic"""
-        topic_name = self.create_topic_name(table_name)
-
+        Args:
+            data_batch: Dictionary containing different data types
+            batch_id: Unique identifier for this batch
+        """
         try:
-            logger.info(f"Sending {len(records)} records to topic: {topic_name}")
+            # Reset delivery status
+            self.delivery_success = False
+            self.delivery_error = None
 
-            # Send each record with a unique key
-            futures = []
-            for i, record in enumerate(records):
-                # Create a unique key for each record
-                key = f"{table_name}_{record.get('raw_id', i)}"
+            # Create message with metadata
+            message = {
+                "batch_id": batch_id,
+                "timestamp": time.time(),
+                "data": data_batch
+            }
 
-                # Add metadata to the record
-                enriched_record = {
-                    'table_name': table_name,
-                    'record_id': record.get('raw_id', i),
-                    'timestamp': int(time.time() * 1000),  # Unix timestamp in milliseconds
-                    'data': record
-                }
+            # Convert to JSON string
+            message_json = json.dumps(message, ensure_ascii=False)
 
-                # Send to Kafka
-                future = self.producer.send(topic_name, key=key, value=enriched_record)
-                futures.append(future)
+            # Send to Kafka
+            self.producer.produce(
+                topic=self.topic,
+                key=batch_id,
+                value=message_json,
+                callback=self.delivery_report
+            )
 
-            # Wait for all messages to be sent
-            for future in futures:
-                try:
-                    record_metadata = future.get(timeout=30)
-                    logger.debug(
-                        f"Message sent to {record_metadata.topic} partition {record_metadata.partition} offset {record_metadata.offset}")
-                except KafkaError as e:
-                    logger.error(f"Failed to send message: {e}")
-                    return False
+            logger.info(f"Sent batch {batch_id} with {len(data_batch)} data types")
 
-            logger.info(f"Successfully sent all {len(records)} records to {topic_name}")
-            return True
+            # Poll for delivery reports with timeout
+            max_polls = 100  # Maximum number of polls
+            poll_count = 0
+
+            while not self.delivery_success and self.delivery_error is None and poll_count < max_polls:
+                self.producer.poll(0.1)  # Poll with 100ms timeout
+                poll_count += 1
+                time.sleep(0.01)  # Small delay between polls
+
+            if self.delivery_error:
+                raise Exception(f"Message delivery failed: {self.delivery_error}")
+            elif not self.delivery_success:
+                logger.warning("Delivery confirmation not received within timeout, but continuing...")
 
         except Exception as e:
-            logger.error(f"Error sending data to topic {topic_name}: {e}")
-            return False
+            logger.error(f"Error sending batch {batch_id}: {str(e)}")
+            raise
 
-    def send_all_tables(self, cleaned_data: Dict[str, List[Dict[str, Any]]]) -> Dict[str, bool]:
-        """Send all tables to their respective Kafka topics"""
-        results = {}
+    def process_json_file(self, file_path: str):
+        """
+        Read JSON file and send data to Kafka in batches
 
-        for table_name, records in cleaned_data.items():
-            if records:  # Only send non-empty tables
-                success = self.send_table_data(table_name, records)
-                results[table_name] = success
+        Args:
+            file_path: Path to the JSON file
+        """
+        try:
+            logger.info(f"Reading JSON file: {file_path}")
+
+            with open(file_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+
+            # Generate batch ID based on timestamp
+            batch_id = f"batch_{int(time.time())}"
+
+            # Send the entire data structure as one batch
+            self.send_data_batch(data, batch_id)
+
+            # Wait for all messages to be delivered with timeout
+            logger.info("Flushing remaining messages...")
+            remaining_messages = self.producer.flush(timeout=30)  # 30 second timeout
+
+            if remaining_messages > 0:
+                logger.warning(f"{remaining_messages} messages were not delivered within timeout")
             else:
-                logger.warning(f"Skipping empty table: {table_name}")
-                results[table_name] = True
+                logger.info("All messages successfully delivered")
 
-        return results
+            logger.info("Successfully processed and sent all data to Kafka")
 
-    def send_batch_data(self, cleaned_data: Dict[str, List[Dict[str, Any]]], batch_size: int = 100):
-        """Send data in batches to manage memory and throughput"""
-        for table_name, records in cleaned_data.items():
-            if not records:
-                continue
-
-            logger.info(f"Processing {table_name} with {len(records)} records in batches of {batch_size}")
-
-            # Split records into batches
-            for i in range(0, len(records), batch_size):
-                batch = records[i:i + batch_size]
-                batch_num = (i // batch_size) + 1
-                total_batches = (len(records) + batch_size - 1) // batch_size
-
-                logger.info(f"Sending batch {batch_num}/{total_batches} for {table_name}")
-
-                success = self.send_table_data(f"{table_name}_batch_{batch_num}", batch)
-                if not success:
-                    logger.error(f"Failed to send batch {batch_num} for {table_name}")
-
-                # Small delay between batches
-                time.sleep(0.1)
+        except FileNotFoundError:
+            logger.error(f"File not found: {file_path}")
+            raise
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON format in file: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Error processing file: {str(e)}")
+            raise
 
     def close(self):
-        """Close the producer and flush any remaining messages"""
+        """
+        Close the producer connection
+        """
         try:
-            self.producer.flush(timeout=30)
-            self.producer.close()
-            logger.info("Kafka producer closed successfully")
+            # Final flush with timeout
+            remaining = self.producer.flush(timeout=10)
+            if remaining > 0:
+                logger.warning(f"{remaining} messages not delivered before closing")
+            logger.info("Producer connection closed")
         except Exception as e:
-            logger.error(f"Error closing producer: {e}")
-
-
-def load_cleaned_data(file_path: str) -> Dict[str, List[Dict[str, Any]]]:
-    """Load cleaned data from JSON file"""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-        logger.info(f"Loaded cleaned data from {file_path}")
-        return data
-    except Exception as e:
-        logger.error(f"Error loading data from {file_path}: {e}")
-        return {}
+            logger.error(f"Error closing producer: {str(e)}")
 
 
 def main():
-    """Main function to send cleaned data to Kafka"""
-    parser = argparse.ArgumentParser(description='Send cleaned subscription data to Kafka')
-    parser.add_argument('--input-file', default='cleaned_data_output.json',
-                        help='Path to cleaned data JSON file')
-    parser.add_argument('--bootstrap-servers', default='localhost:9092',
-                        help='Kafka bootstrap servers')
-    parser.add_argument('--topic-prefix', default='subscription',
-                        help='Prefix for Kafka topics')
-    parser.add_argument('--batch-size', type=int, default=100,
-                        help='Batch size for sending data')
-    parser.add_argument('--use-batches', action='store_true',
-                        help='Send data in batches instead of all at once')
+    # Kafka producer configuration
+    kafka_config = {
+        'bootstrap.servers': 'localhost:9092',
+        'client.id': 'subscription-data-producer',
+        'acks': '1',  # Changed from 'all' to '1' for single broker setup
+        'retries': 3,
+        'retry.backoff.ms': 1000,
+        'delivery.timeout.ms': 30000,
+        'request.timeout.ms': 30000
+        # Removed idempotence and other advanced configs
+    }
 
-    args = parser.parse_args()
+    # For SASL/SSL authentication (uncomment and configure if needed)
+    # kafka_config.update({
+    #     'security.protocol': 'SASL_SSL',
+    #     'sasl.mechanisms': 'PLAIN',
+    #     'sasl.username': 'your-username',
+    #     'sasl.password': 'your-password'
+    # })
 
-    # Load cleaned data
-    cleaned_data = load_cleaned_data(args.input_file)
-    if not cleaned_data:
-        logger.error("No data to send. Exiting.")
-        return
-
-    # Initialize producer
-    producer = SubscriptionDataProducer(
-        bootstrap_servers=args.bootstrap_servers,
-        topic_prefix=args.topic_prefix
-    )
+    # JSON file path
+    json_file_path = "cleaned_data_output.json"  # Update with your file path
 
     try:
-        if args.use_batches:
-            # Send data in batches
-            producer.send_batch_data(cleaned_data, args.batch_size)
-        else:
-            # Send all data at once
-            results = producer.send_all_tables(cleaned_data)
+        # Create producer instance
+        producer = SubscriptionDataProducer(kafka_config)
 
-            # Print summary
-            logger.info("\nSending Summary:")
-            for table_name, success in results.items():
-                status = "✓ SUCCESS" if success else "✗ FAILED"
-                record_count = len(cleaned_data[table_name])
-                logger.info(f"{table_name}: {record_count} records - {status}")
+        # Process and send data
+        producer.process_json_file(json_file_path)
 
-        logger.info("Data sending completed!")
-
-    except Exception as e:
-        logger.error(f"Error in main execution: {e}")
-    finally:
+        # Close producer
         producer.close()
+
+        logger.info("Data pipeline completed successfully")
+
+    except KeyboardInterrupt:
+        logger.info("Process interrupted by user")
+        sys.exit(0)
+    except Exception as e:
+        logger.error(f"Pipeline failed: {str(e)}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

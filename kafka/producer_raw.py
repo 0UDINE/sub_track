@@ -77,7 +77,7 @@ def produce_messages(producer: Producer, topic: str, data: Dict[str, List[Dict[s
 
 def main():
     parser = argparse.ArgumentParser(description='Kafka Producer for Subscription Data')
-    parser.add_argument('--input', type=str, default='../data_generation/raw_data_output.json',
+    parser.add_argument('--input', type=str, default=r'C:\Users\MaxHeap\PycharmProjects\subscription_pipeline\raw_data_output.json',
                         help='Input JSON file with raw data')
     parser.add_argument('--topic', type=str, default='subscriptions_raw',
                         help='Kafka topic to produce messages to')

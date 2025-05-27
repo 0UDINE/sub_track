@@ -16,9 +16,10 @@ for table_name,record in database.items():
 # cleaning "raw_User" table
 raw_User = tables['raw_User']
 print(f"before cleaning : \n {raw_User}")
-raw_User['rÃ´le']= raw_User['rÃ´le'].replace("",'utilisateur') # handel empty values in the "rôle" column
+raw_User['role']= raw_User['role'].replace("",'utilisateur') # handel empty values in the "rôle" column
 raw_User['email'] = np.where(raw_User['email'].str.contains('user'),raw_User['email'] + '@gmail.com',raw_User['email']) #this result in some cases ".com.com"
 raw_User['email']=np.where(raw_User['email'].str.contains('.com.com'),raw_User['email'].str.replace(r'(\.com)+','.com',regex=True),raw_User['email']) # so i replace the multiple ".com"s to only one ".com"
+raw_User.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_User}")
 
 # cleaning "raw_Utilisateur_personnel" table
@@ -30,6 +31,7 @@ raw_Utilisateur_personnel['prenom'] = np.where(raw_Utilisateur_personnel['prenom
 raw_Utilisateur_personnel['telephone'] = raw_Utilisateur_personnel['telephone'].str.replace(r'\D', '', regex=True)
 # standarizing the format of the phone number (e.g.: (12) 3456789)
 raw_Utilisateur_personnel['telephone'] = raw_Utilisateur_personnel['telephone'].astype(str).apply(lambda x : f"({x[:2]}){x[2:]}" if x.strip().isdigit() else "0000000000")
+raw_Utilisateur_personnel.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Utilisateur_personnel}")
 
 # cleaning "raw_Fournisseur" table
@@ -45,6 +47,7 @@ raw_Fournisseur.loc[raw_Fournisseur['emailFournisseur'] == '', 'emailFournisseur
         lambda x: f"{x['nomFournisseur'].replace(' ', '').lower()}@{x['nomFournisseur'].replace(' ', '').lower()}.com",
         axis=1
     )
+raw_Fournisseur.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Fournisseur}")
 
 
@@ -54,11 +57,7 @@ print(f"before cleaning : \n {raw_Notifications}")
 # making empty strings into NaN so we can fill it later
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('',np.nan)
 # standarizing text , instead of ('EMAIL','email'), it will be always ('email')
-raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace({
-    'EMAIL': 'email',
-    'SMS': 'sms',
-    'In-App': 'in-app'
-    })
+raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].str.lower()
 # filling null values with a default value
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].fillna('email')
 
@@ -70,6 +69,7 @@ raw_Notifications['dateEnvoi'] = pd.to_datetime(
 )
 # Convert to string format for consistency
 raw_Notifications['dateEnvoi'] = raw_Notifications['dateEnvoi'].dt.strftime('%Y-%m-%d')
+raw_Notifications.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Notifications}")
 
 
@@ -94,6 +94,7 @@ nan_value=raw_Journal['idAbonnement'].isna()
 raw_Journal.loc[nan_value,'idAbonnement']=np.random.choice(value,size=nan_value.sum())
 # standardizing text to lowercase for 'StatusActivite' column
 raw_Journal['StatusActivite']=raw_Journal['StatusActivite'].str.lower()
+raw_Journal.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Journal}")
 
 
@@ -114,6 +115,7 @@ raw_Abonnement['prixAbonnement']=raw_Abonnement['prixAbonnement'].str.extract(r'
 raw_Abonnement['prixAbonnement']=raw_Abonnement['prixAbonnement'].str.replace(',','.')
 # converting cleaned price values to float type
 raw_Abonnement['prixAbonnement']=raw_Abonnement['prixAbonnement'].astype(float)
+raw_Abonnement.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Abonnement}")
 
 
@@ -168,6 +170,7 @@ raw_Paiement['statusPaiement'] = raw_Paiement['statusPaiement'].replace(
         'success': 'reussi',
         'failed': 'echoue'
     })
+raw_Paiement.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_Paiement}")
 
 
@@ -214,6 +217,7 @@ raw_MethodePaiement['dateExpirementCarte'] = raw_MethodePaiement['dateExpirement
 raw_MethodePaiement['typeMethode']=raw_MethodePaiement['typeMethode'].str.lower()
 # standardizing text to lowercase for 'source_system' column
 raw_MethodePaiement['source_system']=raw_MethodePaiement['source_system'].str.lower()
+raw_MethodePaiement.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_MethodePaiement}")
 
 
@@ -235,6 +239,7 @@ raw_UtilisateurNotif['estLu'] = raw_UtilisateurNotif['estLu'].replace({
 })
 # converting 'estLu' column to integer type
 raw_UtilisateurNotif['estLu']=raw_UtilisateurNotif['estLu'].astype(int)
+raw_UtilisateurNotif.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_UtilisateurNotif}")
 
 
