@@ -182,7 +182,7 @@ class RawDataGenerator:
             "nomFournisseur": random.choice([fake.company(), fake.company().upper()]),
             "emailFournisseur": random.choice([fake.company_email(), f"contact@{fake.domain_word()}.com", ""]),
             "numTele": fake.phone_number(),
-            "address": fake.address().replace('\n', ' - '),  # Different delimiter
+            "addressFournisseur": fake.address().replace('\n', ' - '),  # Different delimiter
             "secteurFournisseur": random.choice(sectors),
             "date_extraction": fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S'),
             "source_system": self._generate_source_system()

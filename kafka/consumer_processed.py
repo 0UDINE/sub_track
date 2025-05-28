@@ -31,14 +31,13 @@ PROCESSED_TABLE_COLUMNS = {
     'processed_Notifications': ['idNotification', 'typeNotification', 'dateEnvoi', 'typeEnvoi', 'contenu'],
     'processed_Journal': ['idJournal', 'userId', 'idAbonnement', 'descriptionJournal', 'typeActivite',
                           'dateCreationJournal', 'valeurPrécedente', 'nouvelleValeur', 'StatusActivite', 'Timestamps'],
-    'processed_Abonnement': ['idAbonnement', 'idFournisseur', 'nomAbonnement', 'descriptionAbonnement', 'prix',
-                             'frequencePaiement', 'dateDebutFacturation', 'dateRenouvelement', 'statusAbonnement',
-                             'prochaineDeFacturation'],
+    'processed_Abonnement': ['idAbonnement', 'idFournisseur', 'titreAbonnement', 'descriptionAbonnement', 'prixAbonnement',
+                             'categorieAbonnement'],
     'processed_Paiement': ['idPaiement', 'idAbonnement', 'userId', 'methodePaiement', 'datePaiement', 'montantPaiement',
                            'motifPaiement', 'statusPaiement'],
     'processed_MethodePaiement': ['idPaiement', 'userId', 'informationCarte', 'dateExpirementCarte', 'typeMethode'],
-    'processed_UtilisateurNotif': ['idNotification', 'userId'],
-    'utilisateur_abonement': ['userId', 'idAbonnement', 'dateDebutAbonnement', 'dateFinAbonnement']
+    'UtilisateurNotif': ['idNotification', 'userId'],
+    'utilisateur_abonement': ['userId', 'idAbonnement','dateDebutFacturation','statusAbonnement', 'dateRenouvelement', 'dateDebutAbonnement', 'prochaineDeFacturation']
 }
 
 
@@ -366,20 +365,17 @@ def process_abonnements(conn: pyodbc.Connection, abonnement_data: List[Dict]) ->
     for abonnement in abonnement_data:
         abonnement_id = DataTransformer.extract_abonnement_id(abonnement.get('idAbonnement'))
         fournisseur_id = DataTransformer.extract_fournisseur_id(abonnement.get('idFournisseur'))
-        nom_abonnement = abonnement.get('nomAbonnement') or None
+        titre_abonnement = abonnement.get('titreAbonnement') or None
         description_abonnement = abonnement.get('descriptionAbonnement') or None
-        prix = abonnement.get('prix')
-        frequence_paiement = abonnement.get('frequencePaiement') or None
-        date_debut_facturation = DataTransformer.parse_date(abonnement.get('dateDebutFacturation'))
-        date_renouvelement = DataTransformer.parse_date(abonnement.get('dateRenouvelement'))
-        status_abonnement = abonnement.get('statusAbonnement') or None
-        prochaine_de_facturation = DataTransformer.parse_date(abonnement.get('prochaineDeFacturation'))
+        prix_abonnement = abonnement.get('prixAbonnement')
+        categorie_abonnement = abonnement.get('categorieAbonnement') or None
+
 
         sql, values = prepare_insert_statement(
             'processed_Abonnement',
             PROCESSED_TABLE_COLUMNS['processed_Abonnement'],
-            [abonnement_id, fournisseur_id, nom_abonnement, description_abonnement, prix,
-             frequence_paiement, date_debut_facturation, date_renouvelement, status_abonnement, prochaine_de_facturation]
+            [abonnement_id, fournisseur_id, titre_abonnement, description_abonnement, prix_abonnement,
+             categorie_abonnement]
         )
 
         if safe_execute(cursor, sql, values, f"abonnement_{abonnement_id}"):
@@ -459,8 +455,8 @@ def process_utilisateur_notif(conn: pyodbc.Connection, utilisateur_notif_data: L
     processed_count = 0
     cursor = conn.cursor()
 
-    if not check_table_exists(conn, 'processed_UtilisateurNotif'):
-        logger.error("Table 'processed_UtilisateurNotif' does not exist. Cannot process user notifications.")
+    if not check_table_exists(conn, 'UtilisateurNotif'):
+        logger.error("Table 'UtilisateurNotif' does not exist. Cannot process user notifications.")
         return 0
 
     for record in utilisateur_notif_data:
@@ -469,17 +465,17 @@ def process_utilisateur_notif(conn: pyodbc.Connection, utilisateur_notif_data: L
 
         # Check for composite primary key existence (still present, but will just log if exists)
         try:
-            cursor.execute(f"SELECT 1 FROM processed_UtilisateurNotif WHERE idNotification = ? AND userId = ?", notification_id, user_id)
+            cursor.execute(f"SELECT 1 FROM UtilisateurNotif WHERE idNotification = ? AND userId = ?", notification_id, user_id)
             if cursor.fetchone():
                 logger.info(f"User Notification for Notification ID {notification_id} and User ID {user_id} already exists. Skipping insertion.")
                 continue # Skip insertion for existing composite key
         except pyodbc.Error as ex:
-            logger.error(f"Error checking existing composite key for processed_UtilisateurNotif: {ex}", exc_info=True)
+            logger.error(f"Error checking existing composite key for UtilisateurNotif: {ex}", exc_info=True)
             # Do not re-raise, allow other records to be attempted
 
         sql, values = prepare_insert_statement(
-            'processed_UtilisateurNotif',
-            PROCESSED_TABLE_COLUMNS['processed_UtilisateurNotif'],
+            'UtilisateurNotif',
+            PROCESSED_TABLE_COLUMNS['UtilisateurNotif'],
             [notification_id, user_id]
         )
 

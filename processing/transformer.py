@@ -58,18 +58,34 @@ print(f"before cleaning : \n {raw_Notifications}")
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].replace('',np.nan)
 # standarizing text , instead of ('EMAIL','email'), it will be always ('email')
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].str.lower()
+raw_Notifications["typeNotification"] = raw_Notifications["typeNotification"].str.lower()
 # filling null values with a default value
 raw_Notifications["typeEnvoi"] = raw_Notifications["typeEnvoi"].fillna('email')
 
-# FIXED: stadarizing the date format
-raw_Notifications['dateEnvoi'] = pd.to_datetime(
-    raw_Notifications['dateEnvoi'].replace('', np.nan),
-    errors='coerce',
-    dayfirst=True
-)
-# Convert to string format for consistency
-raw_Notifications['dateEnvoi'] = raw_Notifications['dateEnvoi'].dt.strftime('%Y-%m-%d')
-raw_Notifications.drop(columns=['raw_id'], inplace=True, errors='ignore')
+# stadarizing the date format
+def standardize_date(date_str):
+    if pd.isna(date_str) or date_str == '':
+        return np.nan
+
+    # Try parsing with different formats
+    for fmt in [
+        '%d/%m/%Y %H:%M',  # 23/03/2025 05:00
+        '%Y-%m-%dT%H:%M:%S.%fZ',  # 2023-12-31T23:59:59.999Z
+        '%Y-%m-%dT%H:%M:%S',  # 2025-05-23T16:29:10
+        '%Y-%m-%d',  # 2025-02-03
+        '%d/%m/%Y'  # 23/03/2025 (without time)
+    ]:
+        try:
+            dt = pd.to_datetime(date_str, format=fmt, errors='raise')
+            return dt.strftime('%Y-%m-%d')
+        except:
+            continue
+
+    return np.nan
+
+
+# Apply the function to your column
+raw_Notifications['dateEnvoi'] = raw_Notifications['dateEnvoi'].apply(standardize_date)
 print(f"after cleaning : \n {raw_Notifications}")
 
 
@@ -228,17 +244,22 @@ print(f"before cleaning : \n {raw_UtilisateurNotif}")
 nan_value=raw_UtilisateurNotif['estUrgent'].isnull()
 # filling null values with random binary choices (1 or 0)
 raw_UtilisateurNotif.loc[nan_value,'estUrgent']=np.random.choice([1,0],size=nan_value.sum())
-# converting 'estUrgent' column to integer type
-raw_UtilisateurNotif['estUrgent']=raw_UtilisateurNotif['estUrgent'].astype(int)
 # standardizing boolean text values to binary integers
 raw_UtilisateurNotif['estLu'] = raw_UtilisateurNotif['estLu'].replace({
-    'true': 1,
-    'Oui': 1,
-    'false': 0,
-    'Non': 0
+    'true': True,
+    'Oui': True,
+    'false': False,
+    'Non': False,
+    1 : True,
+    '1' : True,
+    0 : False,
+    "0" : False
 })
-# converting 'estLu' column to integer type
-raw_UtilisateurNotif['estLu']=raw_UtilisateurNotif['estLu'].astype(int)
+raw_UtilisateurNotif['estUrgent'] = raw_UtilisateurNotif['estUrgent'].replace({
+    1: True,
+    0: False,
+    None : False
+})
 raw_UtilisateurNotif.drop(columns=['raw_id'], inplace=True, errors='ignore')
 print(f"after cleaning : \n {raw_UtilisateurNotif}")
 
