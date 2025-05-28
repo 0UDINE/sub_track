@@ -4,7 +4,7 @@ Here's the updated README.md file with the requested changes:
 
 **A data engineering pipeline demonstrating batch-to-stream processing** using Python, SQL Server, Apache Kafka, and JSON intermediates. Generates synthetic subscription data, processes it through staged ETL, and delivers analytics-ready results.
 
-## �️ Architecture Overview  
+## 🏗️ Architecture Overview  
 
 ![Architecture Diagram](assets/images/architecture_diagram.png)  
 
@@ -108,7 +108,7 @@ subscription_pipeline/
 ├── raw_data_output.json     # Raw generated data output
 ├── Raw_Subscription_Data_DB.sql # Database schema file
 └── README.md
-
+```
 ## 🐛 Troubleshooting  
 
 **Issue** | **Solution**  
