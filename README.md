@@ -68,10 +68,16 @@ python data_generation/faker_generator.py
 # Terminal 2: Stream raw JSON to Kafka
 python kafka/producer_raw.py  
 
-# Terminal 3: Process data → publish processed JSON
+# Terminal 3: Load raw JSON to DB 
+python kafka/consumer_raw.py
+
+# Terminal 4: Process data → publish processed JSON
 python processing/transformer.py  
 
-# Terminal 4: Load processed JSON to DB
+# Terminal 5: Stream processed JSON to Kafka
+python kafka/producer_processed.py 
+
+# Terminal 6: Load processed JSON to DB
 python kafka/consumer_processed.py  
 ```
 
