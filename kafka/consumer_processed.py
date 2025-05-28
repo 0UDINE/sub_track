@@ -128,6 +128,29 @@ class DataTransformer:
     def extract_methode_paiement_id(methode_paiement_id_str: Any) -> Optional[str]:
         return DataTransformer.extract_id(methode_paiement_id_str, 'PMT')
 
+    @staticmethod
+    def clean_string(value: Optional[str]) -> Optional[str]:
+        """
+        Cleans a string by stripping whitespace and returns None if empty.
+        """
+        if value is None:
+            return None
+        cleaned_value = str(value).strip()  # Ensure value is string before stripping
+        return cleaned_value if cleaned_value else None
+
+    @staticmethod
+    def standardize_phone_number(phone_number: Optional[str]) -> Optional[str]:
+        """
+        Standardizes a phone number by extracting digits and optionally formatting it.
+        Returns None if the input is None or results in an empty string.
+        """
+        if phone_number is None:
+            return None
+        # Remove any non-digit characters
+        digits_only = re.sub(r'\D', '', str(phone_number))
+        # Basic standardization: return digits only, or None if empty
+        return digits_only if digits_only else None
+
 
 def create_db_connection(server, database, username=None, password=None, trusted_connection=False):
     """Establishes a connection to the SQL Server database."""
@@ -235,7 +258,7 @@ def process_users(conn: pyodbc.Connection, user_data: List[Dict]) -> int:
 
 
 def process_personal_users(conn: pyodbc.Connection, personal_user_data: List[Dict]) -> int:
-    """Processes and inserts personal user data (validations removed)."""
+    """Process and insert utilisateur_personnel data."""
     processed_count = 0
     cursor = conn.cursor()
 
@@ -243,12 +266,24 @@ def process_personal_users(conn: pyodbc.Connection, personal_user_data: List[Dic
         logger.error("Table 'processed_Utilisateur_personnel' does not exist. Cannot process personal users.")
         return 0
 
-    for p_user in personal_user_data:
-        user_id = DataTransformer.extract_user_id(p_user.get('userId'))
-        prenom = p_user.get('prenom') or None
-        nom = p_user.get('nom') or None
-        telephone = DataTransformer.clean_phone_number(p_user.get('telephone'))
-        adresse = p_user.get('adresse') or None
+    for record in personal_user_data:
+        user_id = DataTransformer.extract_user_id(record.get('userId'))
+        prenom = DataTransformer.clean_string(record.get('prenom'))
+        nom = DataTransformer.clean_string(record.get('nom'))
+        telephone = DataTransformer.standardize_phone_number(record.get('telephone'))
+        adresse = DataTransformer.clean_string(record.get('adresse'))
+
+        # Check if record with this userId already exists
+        try:
+            cursor.execute(f"SELECT 1 FROM processed_Utilisateur_personnel WHERE userId = ?", user_id)
+            if cursor.fetchone():
+                logger.info(f"Personal user with User ID {user_id} already exists. Skipping insertion.")
+                continue # Skip to the next record if it already exists
+        except pyodbc.Error as ex:
+            logger.error(f"Error checking existing personal user for User ID {user_id}: {ex}", exc_info=True)
+            # You might choose to re-raise or continue based on your error handling strategy.
+            # For now, let's continue to attempt insertion, but the DB will prevent duplicates.
+            # It's better to log and continue to avoid blocking the entire batch.
 
         sql, values = prepare_insert_statement(
             'processed_Utilisateur_personnel',
@@ -383,6 +418,8 @@ def process_abonnements(conn: pyodbc.Connection, abonnement_data: List[Dict]) ->
     return processed_count
 
 
+# In consumer_processed.py
+
 def process_paiements(conn: pyodbc.Connection, paiement_data: List[Dict]) -> int:
     """Process and insert paiement data (validations removed)."""
     processed_count = 0
@@ -402,6 +439,23 @@ def process_paiements(conn: pyodbc.Connection, paiement_data: List[Dict]) -> int
         motif_paiement = paiement.get('motifPaiement') or None
         status_paiement = paiement.get('statusPaiement') or None
 
+        # --- Defensive check for Foreign Key existence (userId in processed_Utilisateur_personnel) ---
+        # This prevents inserting payments for users that failed to be inserted into
+        # processed_Utilisateur_personnel due to primary key conflicts or other issues.
+        if user_id: # Only perform the check if a userId is provided
+            try:
+                # Check if the userId exists in the processed_Utilisateur_personnel table
+                cursor.execute(f"SELECT 1 FROM processed_Utilisateur_personnel WHERE userId = ?", user_id)
+                if not cursor.fetchone():
+                    logger.warning(f"Foreign Key violation detected: User ID {user_id} for payment {paiement_id} does not exist in processed_Utilisateur_personnel. Skipping record.")
+                    continue # Skip this payment record if the foreign key is missing
+            except pyodbc.Error as ex:
+                logger.error(f"Error checking FK for payment {paiement_id} (userId {user_id}): {ex}", exc_info=True)
+                # Log the error but continue to try and process other records.
+                # The database will still enforce the FK constraint if this check is bypassed due to an error.
+                continue
+        # --- End of defensive check ---
+
         sql, values = prepare_insert_statement(
             'processed_Paiement',
             PROCESSED_TABLE_COLUMNS['processed_Paiement'],
@@ -413,39 +467,59 @@ def process_paiements(conn: pyodbc.Connection, paiement_data: List[Dict]) -> int
     return processed_count
 
 
+# In consumer_processed.py
+
 def process_methode_paiement(conn: pyodbc.Connection, methode_paiement_data: List[Dict]) -> int:
-    """Process and insert methodePaiement data (validations removed)."""
+    """Process and insert methodePaiement data."""
     processed_count = 0
     cursor = conn.cursor()
 
     if not check_table_exists(conn, 'processed_MethodePaiement'):
-        logger.error("Table 'processed_MethodePaiement' does not exist. Cannot process payment methods.")
+        logger.error("Table 'processed_MethodePaiement' does not exist. Cannot process methodePaiement.")
         return 0
 
-    for methode in methode_paiement_data:
-        paiement_id = DataTransformer.extract_paiement_id(methode.get('idPaiement'))
-        user_id = DataTransformer.extract_user_id(methode.get('userId'))
-        information_carte = methode.get('informationCarte') or None
-        date_expiration_carte = DataTransformer.parse_date(methode.get('dateExpirementCarte'))
-        type_methode = methode.get('typeMethode') or None
+    for methode_paiement in methode_paiement_data:
+        # Extract and transform data for processed_MethodePaiement
+        paiement_id = DataTransformer.extract_paiement_id(methode_paiement.get('idPaiement'))
+        user_id = DataTransformer.extract_user_id(methode_paiement.get('userId'))
+        methode = DataTransformer.clean_string(methode_paiement.get('methode'))
+        date_enregistrement = DataTransformer.parse_date(methode_paiement.get('dateEnregistrement'))
+        status = DataTransformer.clean_string(methode_paiement.get('status'))
 
-        # Check for composite primary key existence (still present, but will just log if exists)
-        try:
-            cursor.execute(f"SELECT 1 FROM processed_MethodePaiement WHERE idPaiement = ? AND userId = ?", paiement_id, user_id)
-            if cursor.fetchone():
-                logger.info(f"Payment method for Paiement ID {paiement_id} and User ID {user_id} already exists. Skipping insertion.")
-                continue # Skip insertion for existing composite key
-        except pyodbc.Error as ex:
-            logger.error(f"Error checking existing composite key for processed_MethodePaiement: {ex}", exc_info=True)
-            # Do not re-raise, allow other records to be attempted
+        # --- Defensive checks for Foreign Key existence ---
+        # 1. Check if paiement_id exists in processed_Paiement
+        if paiement_id:
+            try:
+                cursor.execute(f"SELECT 1 FROM processed_Paiement WHERE idPaiement = ?", paiement_id)
+                if not cursor.fetchone():
+                    logger.warning(f"Foreign Key violation detected: Paiement ID {paiement_id} for methode_paiement (User ID {user_id}) does not exist in processed_Paiement. Skipping record.")
+                    continue # Skip this record if the foreign key is missing
+            except pyodbc.Error as ex:
+                logger.error(f"Error checking FK for methode_paiement (Paiement ID {paiement_id}): {ex}", exc_info=True)
+                continue
+
+        # 2. Check if user_id exists in processed_Utilisateur_personnel
+        # (This check is also crucial because processed_MethodePaiement likely references processed_Utilisateur_personnel)
+        if user_id:
+            try:
+                cursor.execute(f"SELECT 1 FROM processed_Utilisateur_personnel WHERE userId = ?", user_id)
+                if not cursor.fetchone():
+                    logger.warning(f"Foreign Key violation detected: User ID {user_id} for methode_paiement (Paiement ID {paiement_id}) does not exist in processed_Utilisateur_personnel. Skipping record.")
+                    continue # Skip this record if the foreign key is missing
+            except pyodbc.Error as ex:
+                logger.error(f"Error checking FK for methode_paiement (User ID {user_id}): {ex}", exc_info=True)
+                continue
+        # --- End of defensive checks ---
 
         sql, values = prepare_insert_statement(
             'processed_MethodePaiement',
             PROCESSED_TABLE_COLUMNS['processed_MethodePaiement'],
-            [paiement_id, user_id, information_carte, date_expiration_carte, type_methode]
+            [paiement_id, user_id, methode, date_enregistrement, status]
         )
 
-        if safe_execute(cursor, sql, values, f"methode_paiement_{paiement_id}_{user_id}"):
+        # The identifier for safe_execute should combine both IDs for uniqueness and clarity
+        record_identifier = f"methode_paiement_{paiement_id}_{user_id}"
+        if safe_execute(cursor, sql, values, record_identifier):
             processed_count += 1
     return processed_count
 
@@ -483,7 +557,6 @@ def process_utilisateur_notif(conn: pyodbc.Connection, utilisateur_notif_data: L
             processed_count += 1
     return processed_count
 
-
 def process_utilisateur_abonement(conn: pyodbc.Connection, utilisateur_abonement_data: List[Dict]) -> int:
     """Process and insert utilisateur_abonement data (validations removed)."""
     processed_count = 0
@@ -492,12 +565,15 @@ def process_utilisateur_abonement(conn: pyodbc.Connection, utilisateur_abonement
     if not check_table_exists(conn, 'utilisateur_abonement'):
         logger.error("Table 'utilisateur_abonement' does not exist. Cannot process user subscriptions.")
         return 0
-
+#userId	idAbonnement	typeFacturation	statutAbonnement	dateRenouvelement	dateDebutFacturation	prochaineDeFacturation
     for record in utilisateur_abonement_data:
         user_id = DataTransformer.extract_user_id(record.get('userId'))
         abonnement_id = DataTransformer.extract_abonnement_id(record.get('idAbonnement'))
-        date_debut_abonnement = DataTransformer.parse_date(record.get('dateDebutAbonnement'))
-        date_fin_abonnement = DataTransformer.parse_date(record.get('dateFinAbonnement'))
+        dateDebutFacturation = DataTransformer.parse_date(record.get('dateDebutFacturation'))
+        statusAbonnement = record.get('statutAbonnement') or None
+        dateRenouvelement = DataTransformer.parse_date(record.get('dateRenouvelement'))
+        dateDebutFacturation = DataTransformer.parse_date(record.get('dateDebutFacturation'))
+        prochaineDeFacturation = DataTransformer.parse_date(record.get('prochaineDeFacturation'))
 
         # Check for composite primary key existence (still present, but will just log if exists)
         try:
@@ -512,7 +588,7 @@ def process_utilisateur_abonement(conn: pyodbc.Connection, utilisateur_abonement
         sql, values = prepare_insert_statement(
             'utilisateur_abonement',
             PROCESSED_TABLE_COLUMNS['utilisateur_abonement'],
-            [user_id, abonnement_id, date_debut_abonnement, date_fin_abonnement]
+            [user_id, abonnement_id, dateDebutFacturation, statusAbonnement, dateRenouvelement, dateDebutFacturation, prochaineDeFacturation]
         )
 
         if safe_execute(cursor, sql, values, f"user_abonnement_{user_id}_{abonnement_id}"):

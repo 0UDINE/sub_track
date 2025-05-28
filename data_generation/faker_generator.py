@@ -103,7 +103,13 @@ class RawDataGenerator:
 
     def generate_raw_utilisateur_personnel(self) -> Dict[str, Any]:
         """Generate raw personnel user data"""
-        user = self.generate_raw_user()
+        """Generate raw personnel user data"""
+        # Ensure a user exists to link to
+        if not self.raw_users:
+            print("Warning: No raw_users available to generate raw_utilisateur_personnel. Generating a new user.")
+            user = self.generate_raw_user()  # Generate a user if none exist yet
+        else:
+            user = random.choice(self.raw_users)  # Link to an existing user
 
         # Generate various phone number formats
         phone_formats = [
@@ -132,11 +138,15 @@ class RawDataGenerator:
 
     def generate_raw_admin(self) -> Dict[str, Any]:
         """Generate raw admin user data"""
-        user = self.generate_raw_user()
+        if not self.raw_users:
+            print("Warning: No raw_users available to generate raw_admin. Generating a new user.")
+            user = self.generate_raw_user()
+        else:
+            user = random.choice(self.raw_users)
 
         admin = {
             "raw_id": len(self.raw_admins) + 1,
-            "userId": user["userId"],
+            "userId": user["userId"], # Link to an existing user
             "date_extraction": user["date_extraction"],
             "source_system": user["source_system"]
         }
@@ -146,8 +156,21 @@ class RawDataGenerator:
 
     def generate_raw_utilisateur_fournisseur(self) -> Dict[str, Any]:
         """Generate raw supplier user data"""
-        user = self.generate_raw_user()
-        fournisseur = self.generate_raw_fournisseur()
+        if not self.raw_users or not self.raw_fournisseurs:
+            # Need both a user and a supplier. Generate them if not enough exist.
+            if not self.raw_users:
+                user = self.generate_raw_user()
+            else:
+                user = random.choice(self.raw_users)
+
+            if not self.raw_fournisseurs:
+                fournisseur = self.generate_raw_fournisseur()
+            else:
+                fournisseur = random.choice(self.raw_fournisseurs)
+        else:
+            user = random.choice(self.raw_users)
+            fournisseur = random.choice(self.raw_fournisseurs)
+
 
         fournisseur_user = {
             "raw_id": len(self.raw_utilisateur_fournisseur) + 1,
@@ -230,7 +253,12 @@ class RawDataGenerator:
 
     def generate_raw_journal(self) -> Dict[str, Any]:
         """Generate raw journal/log data"""
-        # Generate various activity types
+        # Ensure users and subscriptions (via fournisseurs for idAbonnement) exist
+        if not self.raw_users or not self.raw_abonnements:
+            print("Warning: Not enough users or subscriptions to generate raw_journal. Skipping.")
+            return {} # Skip if parent data is not available
+
+        # Define activities here
         activities = [
             "CREATION_ABONEMMENT",
             "creation abonnement",  # Spaced
@@ -247,8 +275,10 @@ class RawDataGenerator:
         journal = {
             "raw_id": len(self.raw_journals) + 1,
             "idJournal": f"JRN{self.next_journal_id:05}",
-            "userId": random.choice([user["userId"] for user in self.raw_users] + [None, "UNKNOWN"]),
-            "idAbonnement": random.choice([ab["idFournisseur"] for ab in self.raw_fournisseurs] + [None, "N/A"]),
+            # ONLY select from existing user IDs
+            "userId": random.choice([user["userId"] for user in self.raw_users]),
+            # ONLY select from existing abonnement IDs (was fournisseurs, corrected)
+            "idAbonnement": random.choice([ab["idAbonnement"] for ab in self.raw_abonnements]),
             "descriptionJournal": fake.sentence(),
             "typeActivite": random.choice(activities),
             "dateCreationJournal": fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S'),
@@ -266,6 +296,9 @@ class RawDataGenerator:
 
     def generate_raw_abonnement(self) -> Dict[str, Any]:
         """Generate raw subscription data"""
+        if not self.raw_fournisseurs:
+            print("Warning: No raw_fournisseurs available to generate raw_abonnement. Skipping.")
+            return {}  # Skip if parent data is not available
         # Generate various price formats
         price_formats = [
             round(random.uniform(5, 100), 2),
@@ -288,7 +321,8 @@ class RawDataGenerator:
         abonnement = {
             "raw_id": len(self.raw_abonnements) + 1,
             "idAbonnement": f"ABN{self.next_abonnement_id:05}",
-            "idFournisseur": random.choice([fourn["idFournisseur"] for fourn in self.raw_fournisseurs] + [None]),
+            # ONLY select from existing supplier IDs
+            "idFournisseur": random.choice([fourn["idFournisseur"] for fourn in self.raw_fournisseurs]),
             "titreAbonnement": fake.catch_phrase(),
             "descriptionAbonnement": fake.text(max_nb_chars=200),
             "prixAbonnement": random.choice(price_formats),
@@ -304,7 +338,8 @@ class RawDataGenerator:
     def generate_raw_utilisateur_abonement(self) -> Dict[str, Any]:
         """Generate raw user-subscription relationship data"""
         if not self.raw_users or not self.raw_abonnements:
-            return {}
+            print("Warning: Not enough users or subscriptions to generate raw_utilisateur_abonement. Skipping.")
+            return {} # Skip if parent data is not available
 
         statuses = [
             "ACTIF",
@@ -355,7 +390,8 @@ class RawDataGenerator:
     def generate_raw_paiement(self) -> Dict[str, Any]:
         """Generate raw payment data"""
         if not self.raw_users or not self.raw_abonnements:
-            return {}
+            print("Warning: Not enough users or subscriptions to generate raw_paiement. Skipping.")
+            return {}  # Skip if parent data is not available
 
         # Generate various payment methods
         payment_methods = [
@@ -397,12 +433,13 @@ class RawDataGenerator:
             str(round(random.uniform(5, 500), 2)).replace('.', ','),
             round(random.uniform(5, 500))  # No decimal
         ]
-        
+
         paiement = {
             "raw_id": len(self.raw_paiements) + 1,
             "idPaiement": f"PAY{self.next_paiement_id:06}",
-            "idAbonnement": random.choice([a["idAbonnement"] for a in self.raw_abonnements] + [None]),
-            "userId": random.choice([u["userId"] for u in self.raw_users]),
+            "idAbonnement": random.choice([a["idAbonnement"] for a in self.raw_abonnements]),
+            # ONLY select from existing abonnement IDs
+            "userId": random.choice([u["userId"] for u in self.raw_users]),  # ONLY select from existing user IDs
             "methodePaiement": random.choice(payment_methods),
             "datePaiement": random.choice(date_formats),
             "montantPaiement": random.choice(amount_formats),
@@ -419,7 +456,8 @@ class RawDataGenerator:
     def generate_raw_methode_paiement(self) -> Dict[str, Any]:
         """Generate raw payment method data"""
         if not self.raw_users or not self.raw_paiements:
-            return {}
+            print("Warning: Not enough users or payments to generate raw_methode_paiement. Skipping.")
+            return {}  # Skip if parent data is not available
 
         # Generate various card types
         card_types = [
@@ -454,7 +492,8 @@ class RawDataGenerator:
         methode = {
             "raw_id": len(self.raw_methodes_paiement) + 1,
             "idPaiement": random.choice([p["idPaiement"] for p in self.raw_paiements]),
-            "userId": random.choice([u["userId"] for u in self.raw_users]),
+            # ONLY select from existing payment IDs
+            "userId": random.choice([u["userId"] for u in self.raw_users]),  # ONLY select from existing user IDs
             "informationCarte": random.choice(card_number_formats),
             "dateExpirementCarte": random.choice(date_formats),
             "typeMethode": random.choice(card_types),
@@ -468,12 +507,14 @@ class RawDataGenerator:
     def generate_raw_utilisateur_notif(self) -> Dict[str, Any]:
         """Generate raw user-notification relationship data"""
         if not self.raw_users or not self.raw_notifications:
-            return {}
+            print("Warning: Not enough users or notifications to generate raw_utilisateur_notif. Skipping.")
+            return {}  # Skip if parent data is not available
 
         notif = {
             "raw_id": len(self.raw_utilisateur_notif) + 1,
-            "userId": random.choice([u["userId"] for u in self.raw_users]),
+            "userId": random.choice([u["userId"] for u in self.raw_users]),  # ONLY select from existing user IDs
             "idNotification": random.choice([n["idNotification"] for n in self.raw_notifications]),
+            # ONLY select from existing notification IDs
             "estLu": random.choice([1, 0, "1", "0", "true", "false", "Oui", "Non"]),
             "estUrgent": random.choice([1, 0, None]),
             "date_extraction": fake.date_time_this_year().strftime('%Y-%m-%d %H:%M:%S'),
@@ -484,49 +525,80 @@ class RawDataGenerator:
         return notif
 
     def generate_all_raw_data(self) -> Dict[str, List[Dict[str, Any]]]:
-        """Generate all raw data according to specified volumes"""
+        """Generate all raw data according to specified volumes, ensuring FK integrity."""
         print("Generating raw users...")
         for _ in range(self.num_users):
             self.generate_raw_user()
-            # Randomly create user types
-            if random.random() < 0.7:  # 70% personal users
-                self.generate_raw_utilisateur_personnel()
-            elif random.random() < 0.2:  # 20% of remaining = 6% total admins
-                self.generate_raw_admin()
-            else:  # 24% supplier users
-                self.generate_raw_utilisateur_fournisseur()
 
         print("Generating raw suppliers...")
         for _ in range(self.num_suppliers):
             self.generate_raw_fournisseur()
 
+        # Now that users and suppliers are generated, we can create their specific types
+        print("Generating specific user types (personnel, admin, supplier users)...")
+        # Ensure a sufficient pool of users to pick from for specific types
+        num_personal_users = int(self.num_users * 0.7)
+        num_admin_users = int(self.num_users * 0.1) # Adjusted for better distribution
+        num_supplier_users = self.num_users - num_personal_users - num_admin_users # Remaining
+
+        for _ in range(num_personal_users):
+            self.generate_raw_utilisateur_personnel()
+
+        for _ in range(num_admin_users):
+            self.generate_raw_admin()
+
+        for _ in range(num_supplier_users):
+            self.generate_raw_utilisateur_fournisseur()
+
         print("Generating raw subscriptions...")
-        for _ in range(self.num_subscriptions):
-            self.generate_raw_abonnement()
+        # Ensure suppliers exist before generating subscriptions
+        if not self.raw_fournisseurs:
+            print("Warning: No suppliers available. Cannot generate subscriptions.")
+        else:
+            for _ in range(self.num_subscriptions):
+                self.generate_raw_abonnement()
+
 
         print("Generating raw user-subscription relationships...")
-        for _ in range(int(self.num_subscriptions * 1.5)):  # More relationships than subscriptions
-            self.generate_raw_utilisateur_abonement()
+        if not self.raw_users or not self.raw_abonnements:
+            print("Warning: Not enough users or subscriptions for user-subscription relationships.")
+        else:
+            for _ in range(int(self.num_subscriptions * 1.5)):
+                self.generate_raw_utilisateur_abonement()
 
         print("Generating raw payments...")
-        for _ in range(self.num_payments):
-            self.generate_raw_paiement()
+        if not self.raw_users or not self.raw_abonnements:
+            print("Warning: Not enough users or subscriptions for payments.")
+        else:
+            for _ in range(self.num_payments):
+                self.generate_raw_paiement()
 
         print("Generating raw payment methods...")
-        for _ in range(int(self.num_users * 0.8)):  # 80% of users have payment methods
-            self.generate_raw_methode_paiement()
+        if not self.raw_users or not self.raw_paiements:
+            print("Warning: Not enough users or payments for payment methods.")
+        else:
+            for _ in range(int(self.num_users * 0.8)):
+                self.generate_raw_methode_paiement()
 
         print("Generating raw notifications...")
         for _ in range(self.num_notifications):
             self.generate_raw_notifications()
 
         print("Generating raw user-notification relationships...")
-        for _ in range(int(self.num_notifications * 1.2)):  # More relationships than notifications
-            self.generate_raw_utilisateur_notif()
+        if not self.raw_users or not self.raw_notifications:
+            print("Warning: Not enough users or notifications for user-notification relationships.")
+        else:
+            for _ in range(int(self.num_notifications * 1.2)):
+                self.generate_raw_utilisateur_notif()
 
         print("Generating raw journal entries...")
-        for _ in range(self.num_journals):
-            self.generate_raw_journal()
+        # Journal entries depend on users and subscriptions, so generate after them
+        if not self.raw_users or not self.raw_abonnements:
+             print("Warning: Not enough users or subscriptions for journal entries.")
+        else:
+            for _ in range(self.num_journals):
+                self.generate_raw_journal()
+
 
         return {
             "raw_User": self.raw_users,
@@ -542,6 +614,7 @@ class RawDataGenerator:
             "raw_UtilisateurNotif": self.raw_utilisateur_notif,
             "raw_utilisateur_abonement": self.raw_utilisateur_abonement
         }
+
 
     def save_raw_to_json(self, output_path: str = "raw_data_output.json") -> str:
         """Save all generated raw data to JSON file"""

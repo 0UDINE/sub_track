@@ -1,59 +1,41 @@
 raw_id,idFournisseur,nomFournisseur,emailFournisseur,numTele,addressFournisseur,secteurFournisseur,date_extraction,source_system
-1,FRN0001,CLÉMENT ET FILS,,4973882081,"1939 Christine Manor - Sarahborough, TN 94373",Agriculture,2025-03-03 00:12:10,Legacy_DB
-2,FRN0002,NAVARRO,bigotmarie@bonnin.fr,+1-325-846-2914x86528,"1, chemin Josette Deschamps - 04193 Parent",Technologie,2025-04-22 16:37:19,Legacy_DB
-3,FRN0003,"Thomas, Patterson and Mendez",,+1-818-751-8888x80670,"1531 Anderson Knoll - Lisaburgh, MP 90243",Transport,2025-03-07 23:56:00,CRM_System
-4,FRN0004,BOUCHET SARL,dmace@brunel.org,927.795.6878x3391,boulevard de Lecomte - 20772 HubertBourg,Transport,2025-01-16 03:59:06,Web_Form
-5,FRN0005,BRUNEAU,contact@lefebvre.com,595.899.5342,"926 Williams Key - Floydmouth, UT 55069",Santé,2025-03-05 01:31:45,Mobile_App_v2
-6,FRN0006,Moon-Flores,duncandavid@winters.com,05 16 67 66 18,"31, avenue de Evrard - 17845 Bernard",Commerce,2025-02-24 19:38:43,Web_Form
-7,FRN0007,ADAMS-BUTLER,,(278)450-8214x86289,"30705 Joshua View - Wagnerville, TX 04506",Autre,2025-02-16 11:24:36,API_Import
-8,FRN0008,WRIGHT GROUP,,685-973-0652x40778,"314, rue de Charles - 93741 Saint AlfredVille",Technologie,2025-04-23 23:48:22,Manual_Entry
-9,FRN0009,Gauthier SA,dlevy@pires.com,576.271.9903x8498,"502 Elizabeth Villages - Markland, AR 14773",Industrie,2025-01-21 04:20:29,Web_Form
-10,FRN0010,Maurice,contact@carr-holt.com,+33 4 37 72 28 20,"85, boulevard Richard Lévy - 56238 Schmittdan",Santé,2025-05-03 12:53:40,API_Import
-11,FRN0011,HARDY,adelaide78@blanc.fr,03 90 24 00 82,"18, avenue de Faivre - 61406 Sainte Susanne",Technologie,2025-02-26 21:07:05,Mobile_App_v2
-12,FRN0012,Robert Lévy SARL,marcus61@bridges-brown.info,686-883-3901x98179,"8995 Christina Parks Suite 729 - Lake Kelly, ID 00708",Commerce,2025-03-18 15:40:40,API_Import
-13,FRN0013,Johnson Ltd,,+33 4 23 48 46 31,"81, avenue de Maillard - 89737 Rocheboeuf",Agriculture,2025-04-30 11:32:35,Legacy_DB
-14,FRN0014,"SHAFFER, LEWIS AND DAVIDSON",contact@marchand.com,01 41 31 20 73,"44885 Daniel Isle Suite 699 - Port Gregorymouth, MP 44795",tech,2025-03-08 09:25:45,API_Import
-15,FRN0015,Langlois,contact@grenier.com,+33 (0)4 78 12 04 61,"74, rue Lecoq - 91354 Piresdan",tech,2025-02-17 23:51:33,Web_Form
-16,FRN0016,"Murray, Grimes and Huang",,0474208814,"63, rue Marie - 30748 GermainVille",tech,2025-05-25 04:41:43,Mobile_App_v2
-17,FRN0017,BERGER,,0233327195,"803 Marsh Underpass Suite 124 - West Tonyaside, MP 22254",Industrie,2025-04-21 20:58:02,CRM_System
-18,FRN0018,BOUTIN REGNIER SA,contact@price.com,03 52 06 52 40,"58, avenue de Aubert - 72291 Lévêqueboeuf",Commerce,2025-05-26 22:25:52,Manual_Entry
-19,FRN0019,Paris,contact@collet.com,(974)238-4215x031,"57845 Kayla Courts - East Jenny, NH 51302",INDUSTRIE,2025-05-19 13:58:39,CRM_System
-20,FRN0020,"Wilson, Collins and Williams",contact@de.com,7949353344,"24109 Jamie Keys Suite 424 - East Charles, RI 44900",Autre,2025-01-01 03:21:16,Web_Form
-21,FRN0021,Peron,tristanmace@delmas.fr,+33 7 98 29 45 65,rue de Bertrand - 17282 Saint Franck,Construction,2025-05-12 04:02:21,API_Import
-22,FRN0022,DAVID S.A.S.,contact@seguin.com,9167016629,"817 Christopher Unions - Davisport, TX 84966",Autre,2025-01-03 12:59:08,API_Import
-23,FRN0023,CALLAHAN PLC,contact@begue.com,01 82 58 65 09,"2, rue Martin Paul - 13203 Rossi",tech,2025-03-16 19:46:22,API_Import
-24,FRN0024,BELL GROUP,leonlaine@colas.fr,(345)799-2816,"26, rue Dias - 51616 Descamps",Agriculture,2025-04-18 23:50:46,Manual_Entry
-25,FRN0025,"Jones, Turner and Murray",contact@gomes.com,001-396-969-5832x197,"2461 Gina Ranch - Murphyton, CO 29023",INDUSTRIE,2025-01-27 23:23:56,Web_Form
-26,FRN0026,GUICHARD,contact@salmon.com,04 74 93 98 36,"9465 Brandi Ridge Suite 240 - Rachelton, AL 92691",INDUSTRIE,2025-04-19 17:55:48,Legacy_DB
-27,FRN0027,RODRIGUEZ-CAMPBELL,,8365965666,"38656 Keith Well Apt. 201 - East Jenniferfort, TN 57744",Agriculture,2025-01-27 08:45:39,Mobile_App_v2
-28,FRN0028,ENGLISH-DOMINGUEZ,contact@gauthier.com,(292)978-6876x53269,"64, rue de Rey - 32930 Morin",Construction,2025-04-21 18:39:46,Mobile_App_v2
-29,FRN0029,Hamon Boucher S.A.S.,,+33 2 29 82 73 06,"55, boulevard de Colin - 92166 Blondel-la-Forêt",Technologie,2025-04-24 22:09:25,Legacy_DB
-30,FRN0030,MICHAUD S.A.S.,contact@williams.com,03 89 67 06 75,"38602 Laura Isle Apt. 898 - North Tonya, WI 36936",tech,2025-05-25 23:54:34,Manual_Entry
-31,FRN0031,Chang PLC,,+33 1 80 75 96 59,rue Berger - 63511 Sanchez,tech,2025-04-27 18:49:12,Web_Form
-32,FRN0032,Dufour,sullivanandrea@flowers.com,03 24 08 46 72,"63, chemin de Faure - 97684 Roy-les-Bains",Construction,2025-02-03 12:26:14,Manual_Entry
-33,FRN0033,Jenkins PLC,,+1-510-616-1259x016,"73, rue de Mary - 12259 Albert",Industrie,2025-03-12 17:26:36,Legacy_DB
-34,FRN0034,Chartier,contact@campbell.com,715.566.8513,"8374 Flores Parkways - East Bobbytown, CT 53364",Technologie,2025-02-19 11:17:39,Mobile_App_v2
-35,FRN0035,Peters Ltd,guillonpenelope@diaz.com,271.218.4252x7863,"89, chemin Marques - 20668 Masson",Agriculture,2025-01-02 16:10:21,API_Import
-36,FRN0036,PARKER-SMITH,,03 80 37 45 70,"82, rue Maurice Humbert - 84673 Sainte JacquelineVille",Autre,2025-01-28 04:30:35,CRM_System
-37,FRN0037,Perez Lebrun et Fils,contact@guyot.com,+33 5 82 62 99 17,chemin Hugues Brunel - 18949 Michel,Commerce,2025-02-28 15:35:14,CRM_System
-38,FRN0038,Gonzales-Fisher,,+33 (0)4 38 41 04 04,avenue Alice Grégoire - 43177 Rémy,Transport,2025-01-10 06:50:38,Mobile_App_v2
-39,FRN0039,Allard,xguillaume@fleury.fr,+33 (0)4 32 66 88 65,"48, boulevard Nicole Rolland - 84461 Gilbert-les-Bains",Commerce,2025-03-22 20:59:18,API_Import
-40,FRN0040,GONZALES AND SONS,contact@green-butler.com,9536926096,"68, rue Martinez - 84930 Reynaudboeuf",Santé,2025-04-12 20:27:47,Legacy_DB
-41,FRN0041,BERGER,contact@ribeiro.com,001-362-472-0536x4991,"7285 George Corner Suite 538 - Port Andrew, NM 60006",Transport,2025-02-17 08:26:48,Manual_Entry
-42,FRN0042,Baxter-Dunn,,001-360-978-9075x1991,"6, chemin Julien - 08469 Saint Élisabeth",Transport,2025-04-04 20:13:20,API_Import
-43,FRN0043,WOOD-HERNANDEZ,kerry49@morgan.com,(849)782-8385x97477,rue Roger Giraud - 97287 Duhamel,Commerce,2025-03-15 15:21:53,Legacy_DB
-44,FRN0044,WARD LLC,contact@salazar.com,+1-243-668-7715x6922,"6341 Clark Ramp - Owenston, TN 06758",INDUSTRIE,2025-01-28 13:12:06,Web_Form
-45,FRN0045,Martinez LLC,contact@herrera.com,0139380162,"4135 Wong Street Suite 416 - Nancystad, NH 28549",Construction,2025-03-07 01:35:51,CRM_System
-46,FRN0046,MASSON,contact@richardson.com,001-695-379-4758x16602,"5, chemin Dumas - 09242 Godard-la-Forêt",Technologie,2025-02-07 13:23:14,Manual_Entry
-47,FRN0047,Jackson-Lewis,contact@chevalier.com,+33 (0)2 47 23 59 04,"1469 Schultz Court - Jessicafort, TN 77816",Autre,2025-04-05 23:33:23,Manual_Entry
-48,FRN0048,AUBRY,contact@marquez.com,001-960-717-0396x101,"017 Shelby Mount - Autumnfort, ND 57186",Commerce,2025-05-17 01:38:03,Web_Form
-49,FRN0049,Courtois Gay et Fils,,0246085738,"6353 Tucker Garden Suite 589 - Williamston, NH 17289",Santé,2025-01-26 19:04:35,Web_Form
-50,FRN0050,Lenoir Auger et Fils,,+33 4 74 11 74 55,"17, rue Christelle Lemoine - 69965 Sainte Cécile-sur-Mer",Autre,2025-02-18 01:12:14,Manual_Entry
-51,FRN0051,GAUTHIER,camillefernandez@ollivier.fr,+33 5 64 41 26 08,"39014 Brandon Mountain Suite 274 - South Richard, TX 29994",Transport,2025-02-20 00:13:00,API_Import
-52,FRN0052,Gros et Fils,timothy96@mack-wilkerson.com,+33 (0)5 64 93 19 63,"295, avenue Charles Langlois - 42133 Mace",Autre,2025-04-30 12:38:56,Manual_Entry
-53,FRN0053,BESNARD,,0234420259,"00735 Bridges Points - South Madison, NY 23321",Agriculture,2025-03-08 13:07:18,Mobile_App_v2
-54,FRN0054,Maréchal Léger SARL,,(488)566-9112,"41, rue Charlotte Étienne - 97357 Hoareaudan",Autre,2025-02-02 06:46:01,Manual_Entry
-55,FRN0055,SEGUIN BOURDON SA,,(452)761-1978,"9, rue de Jourdan - 38354 Bonneauboeuf",tech,2025-02-13 16:41:13,Web_Form
-56,FRN0056,"Grimes, Long and Chang",contact@morel.com,211-781-8513x6738,"277, rue de Lebrun - 03517 Normand",Transport,2025-01-29 00:52:49,Manual_Entry
-57,FRN0057,Maillet S.A.R.L.,kbenoit@launay.com,6383819376,"222, boulevard de Hoarau - 50680 Sainte Capucine-sur-Mer",INDUSTRIE,2025-05-12 22:13:16,Manual_Entry
-58,FRN0058,"Osborne, Ramirez and Crawford",contact@noel.com,+1-583-833-5401x12728,"99, avenue de Coulon - 01552 Perrot",Technologie,2025-04-26 12:14:01,Mobile_App_v2
+1,FRN0001,Diaz SA,contact@wilson-harris.com,+33 (0)1 72 33 97 40,"18, chemin Durand - 26701 Chrétien",Construction,2025-05-19 09:28:33,API_Import
+2,FRN0002,Garnier,,0310939685,"91, chemin de Vincent - 13547 Sanchez",Transport,2025-02-12 07:29:37,Web_Form
+3,FRN0003,TEXIER,,404.762.2656x7661,"230 Tiffany Mountain Suite 863 - South Michael, KY 25205",INDUSTRIE,2025-04-06 06:22:40,Mobile_App_v2
+4,FRN0004,Hamon Lenoir S.A.R.L.,xclement@hoarau.com,001-210-569-0331x1907,"66, rue Éric Thomas - 39555 Samson",Commerce,2025-05-24 19:10:17,Mobile_App_v2
+5,FRN0005,Henry,emmanuellemoine@pons.fr,+1-730-528-4395,"836 Hill Point - Lake Erika, OH 65463",Transport,2025-01-10 02:29:44,Web_Form
+6,FRN0006,GODARD S.A.S.,shelly68@horton-russell.com,(428)873-3427x0866,"1751 Brett Lane - Port Charlesshire, VA 88509",INDUSTRIE,2025-01-03 09:30:41,API_Import
+7,FRN0007,"ROBINSON, CLARK AND MEADOWS",,+33 2 69 44 47 21,"56, rue Agnès Deschamps - 31838 Valentin-sur-Mer",Industrie,2025-03-30 21:47:23,CRM_System
+8,FRN0008,Hayden Inc,,(744)858-7717x535,"204 Phillips Flat - Jerryshire, MP 32709",Technologie,2025-01-02 07:32:17,API_Import
+9,FRN0009,Pierce-Harding,contact@perret.com,+33 4 57 59 37 52,Unit 7725 Box 2287 - DPO AE 71559,Autre,2025-03-19 07:55:51,API_Import
+10,FRN0010,"Bernard, Warren and Combs",contact@noel.com,+33 3 28 80 73 74,"62312 Jeffery Motorway - Brucefort, TN 64445",Technologie,2025-01-04 01:18:55,CRM_System
+11,FRN0011,JOLY,contact@smith-li.com,0380426617,"98, avenue de Devaux - 05909 Boutin",Industrie,2025-04-15 06:09:47,Mobile_App_v2
+12,FRN0012,Nicolas S.A.,,02 44 01 43 88,"4615 Stevens Gardens Apt. 410 - South Nicholasside, NJ 07856",Santé,2025-04-19 08:26:16,Manual_Entry
+13,FRN0013,"Smith, Jackson and Porter",contact@laurent.com,380-633-9740,"PSC 9025, Box 0392 - APO AP 52706",tech,2025-01-15 22:33:16,Legacy_DB
+14,FRN0014,Martin-Allen,irhodes@reyes-singh.com,615.999.9650,"2, rue de Lévêque - 39451 Leclercdan",Technologie,2025-04-06 06:22:40,Web_Form
+15,FRN0015,NAVARRO ET FILS,michaelpugh@lopez-willis.biz,+33 (0)4 57 01 05 12,"38, boulevard Aurélie Pinto - 29916 Lombard-les-Bains",Technologie,2025-01-17 15:21:48,Manual_Entry
+16,FRN0016,LEROY,contact@lebreton.com,001-365-451-1047x5412,rue de Leclerc - 35870 Saint Susanne-les-Bains,Santé,2025-03-13 00:43:08,Mobile_App_v2
+17,FRN0017,Cole-Peters,,(404)666-1839x8262,"12646 Washington Club Suite 437 - South Daniel, ME 01388",Agriculture,2025-02-20 22:39:19,Legacy_DB
+18,FRN0018,Evrard,contact@benard.com,775-669-2459x37526,"356 Velasquez Lock Suite 193 - Lake Katrina, AK 95818",Santé,2025-03-31 15:18:55,Web_Form
+19,FRN0019,"CLARK, SALINAS AND GUERRA",contact@fuentes.com,+1-872-843-4266x17979,"4, rue Jules Besson - 88244 Chevalliernec",Construction,2025-04-16 13:34:13,Web_Form
+20,FRN0020,Gibbs LLC,rodriguezjohn@kelly.biz,+33 3 21 74 22 57,"8, rue Jacob - 71617 Lejeunedan",Santé,2025-05-27 03:45:21,Legacy_DB
+21,FRN0021,RÉMY S.A.,maryflores@meyer.com,796-823-3260,"76748 Corey Mills Apt. 066 - Port Brittany, TN 84680",INDUSTRIE,2025-05-13 07:28:15,CRM_System
+22,FRN0022,WATSON PLC,contact@allard.com,001-217-888-2426x55946,"PSC 3272, Box 3717 - APO AP 66376",tech,2025-02-26 00:51:03,Web_Form
+23,FRN0023,GUICHARD,kshelton@johnson.com,987-808-4779x541,boulevard Jean - 40106 Faure-les-Bains,Autre,2025-02-25 19:42:23,CRM_System
+24,FRN0024,"JONES, CARDENAS AND HANCOCK",,001-545-689-6268,"3802 Gina Locks Apt. 239 - Maldonadoburgh, DE 83285",tech,2025-05-10 16:38:24,Mobile_App_v2
+25,FRN0025,"Johnson, Atkinson and Rojas",contact@johns.com,001-288-861-8207,"07923 Maxwell Radial - South Angela, MH 30774",Technologie,2025-03-18 13:58:26,Mobile_App_v2
+26,FRN0026,HILL LTD,contact@bates.com,+1-870-535-0675x789,"56, boulevard de Foucher - 31732 Berthelot",INDUSTRIE,2025-03-04 07:53:54,Web_Form
+27,FRN0027,Morgan Ltd,,+1-205-621-8799x38444,"32, chemin de Picard - 87961 Joly",Technologie,2025-05-19 09:54:04,Web_Form
+28,FRN0028,Holden-Medina,bonillalarry@barron-tapia.com,0755917105,"6, boulevard Éric Poirier - 57565 Royer",Agriculture,2025-05-27 03:06:12,Manual_Entry
+29,FRN0029,Mayer Ltd,wrolland@diaz.net,+33 4 56 78 41 71,"56891 Brandi Mill Suite 978 - Port Nicolebury, SC 40157",tech,2025-05-02 20:39:21,Legacy_DB
+30,FRN0030,JENKINS-KENNEDY,ines49@bourgeois.org,+33 1 64 53 78 80,"9, avenue Perez - 97618 Dupuis",tech,2025-05-06 02:42:03,Manual_Entry
+31,FRN0031,Johnson-Juarez,iguillou@pascal.com,03 54 04 86 25,"81, chemin de Lejeune - 41951 Millet",Construction,2025-05-22 13:05:59,Mobile_App_v2
+32,FRN0032,Weiss Group,,+33 (0)2 44 56 73 44,"8, avenue Isaac Allain - 50702 Sainte Maurice-sur-Mer",Transport,2025-03-18 21:44:39,API_Import
+33,FRN0033,"Stanley, Melton and Kelly",,001-402-691-5854x233,"794, avenue de Charles - 43153 Coste-sur-Bruneau",Santé,2025-04-24 18:11:57,Mobile_App_v2
+34,FRN0034,Blot SA,casey54@wright.info,+33 (0)1 75 89 85 73,"2159 Gardner Run Apt. 749 - South Brycetown, MA 02221",tech,2025-04-23 03:03:46,Legacy_DB
+35,FRN0035,Rossi S.A.,,001-444-476-0948x37740,"9, avenue de Dupré - 66397 Picard",Agriculture,2025-05-07 07:47:16,Web_Form
+36,FRN0036,Perrier,contact@sullivan.com,402.365.0996,"69, rue de Paul - 94213 Roux-sur-Colin",Autre,2025-04-19 07:40:38,Mobile_App_v2
+37,FRN0037,FOUCHER,robertchavez@greene.biz,(561)602-5634x20222,"871, chemin Hamel - 74641 Charles",Commerce,2025-03-05 19:59:58,Mobile_App_v2
+38,FRN0038,"Chapman, Williams and Yoder",patriciafreeman@yang.org,07 92 86 81 12,"446 Joshua Burg - East John, PR 46436",Transport,2025-01-13 04:02:59,API_Import
+39,FRN0039,TORRES-FOSTER,contact@hamilton-parker.com,(701)886-3726x3199,"PSC 5592, Box 2776 - APO AA 12648",Commerce,2025-04-29 09:39:44,Manual_Entry
+40,FRN0040,PARIS SARL,contact@simon.com,213-644-4867x22883,"14546 Nathaniel Orchard - Bettyborough, FL 47372",Construction,2025-04-30 20:20:16,API_Import
