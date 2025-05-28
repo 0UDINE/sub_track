@@ -1,5 +1,3 @@
-Here's the updated README.md file with the requested changes:
-
 # 📊 Subscription Data Pipeline  
 
 **A data engineering pipeline demonstrating batch-to-stream processing** using Python, SQL Server, Apache Kafka, and JSON intermediates. Generates synthetic subscription data, processes it through staged ETL, and delivers analytics-ready results.
