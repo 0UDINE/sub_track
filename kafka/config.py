@@ -8,7 +8,7 @@ KAFKA_CONFIG = {
 # Topic Names
 TOPICS = {
     'raw': 'subscriptions_raw',
-    'processed': 'subscriptions_processed',
+    'processed': 'subscriptions_processed_data',
     'errors': 'subscriptions_errors'
 }
 
