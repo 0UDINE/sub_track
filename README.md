@@ -81,7 +81,7 @@ Here's the updated project structure section of the README.md file that matches 
 
 
 ## 📁 Project Structure  
-
+```
 subscription_pipeline/
 ├── .venv/                   # Python virtual environment
 ├── assets/
