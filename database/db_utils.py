@@ -30,8 +30,7 @@ class DatabaseManager:
             )
             """)
 
-            # Create other raw tables similarly...
-            # (Include all your raw table creation scripts here)
+
 
             self.conn.commit()
             return True
@@ -58,8 +57,7 @@ class DatabaseManager:
             ADD CONSTRAINT CHK_valid_email CHECK (email LIKE '%_@__%.__%')
             """)
 
-            # Create other processed tables with constraints...
-            # (Include all your processed table creation scripts with constraints)
+
 
             self.conn.commit()
             return True

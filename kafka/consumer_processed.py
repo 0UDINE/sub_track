@@ -47,7 +47,6 @@ class DataTransformer:
     @staticmethod
     def hash_password(password: str) -> str:
         """Hash a password using SHA256 (simplified: no check for empty password)"""
-        # Original: if not password: return ""; return hashlib.sha256(password.encode()).hexdigest()
         if password:
             return hashlib.sha256(str(password).encode()).hexdigest()
         return "" # Return empty string if password is None or empty
@@ -183,8 +182,6 @@ def check_table_exists(conn: pyodbc.Connection, table_name: str) -> bool:
 
 def record_exists(conn: pyodbc.Connection, table_name: str, id_column: str, record_id: str) -> bool:
     """Checks if a record with the given ID exists (no longer strictly used for skipping due to constraint removal)."""
-    # This function is kept but its usage for "skipping" is mostly removed in processing functions.
-    # It might still be used for composite keys, but the 'continue' logic is gone.
     cursor = conn.cursor()
     try:
         query = f"SELECT 1 FROM {table_name} WHERE {id_column} = ?"
@@ -220,7 +217,7 @@ def process_users(conn: pyodbc.Connection, user_data: List[Dict]) -> int:
 
     if not check_table_exists(conn, 'processed_User'):
         logger.error("Table 'processed_User' does not exist. Cannot process users.")
-        return 0 # Do not raise, just log and skip for this table
+        return 0
 
     for user in user_data:
         user_id = DataTransformer.extract_user_id(user.get('userId'))
@@ -281,9 +278,6 @@ def process_personal_users(conn: pyodbc.Connection, personal_user_data: List[Dic
                 continue # Skip to the next record if it already exists
         except pyodbc.Error as ex:
             logger.error(f"Error checking existing personal user for User ID {user_id}: {ex}", exc_info=True)
-            # You might choose to re-raise or continue based on your error handling strategy.
-            # For now, let's continue to attempt insertion, but the DB will prevent duplicates.
-            # It's better to log and continue to avoid blocking the entire batch.
 
         sql, values = prepare_insert_statement(
             'processed_Utilisateur_personnel',
